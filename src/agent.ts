@@ -1,5 +1,4 @@
-import Anthropic from "@anthropic-ai/sdk";
-import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
+import { execFile } from "node:child_process";
 import { ConnectError } from "@connectrpc/connect";
 import {
   Outcome,
@@ -25,6 +24,56 @@ const FIND_TYPE_MAP: Record<string, FindRequest_Type> = {
   files: FindRequest_Type.FILES,
   dirs: FindRequest_Type.DIRS,
 };
+
+interface ClaudeResponse {
+  result: string;
+  structured_output?: unknown;
+  duration_ms?: number;
+  total_cost_usd?: number;
+}
+
+function callClaude(
+  model: string,
+  systemPrompt: string,
+  prompt: string,
+): Promise<ClaudeResponse> {
+  return new Promise((resolve, reject) => {
+    const args = [
+      "--print",
+      "--output-format", "json",
+      "--model", model,
+      "--system-prompt", systemPrompt,
+    ];
+
+    const child = execFile("claude", args, {
+      maxBuffer: 10 * 1024 * 1024,
+      timeout: 120_000,
+    }, (err, stdout, stderr) => {
+      // CLI may output valid JSON even on non-zero exit
+      if (stdout) {
+        try {
+          const parsed = JSON.parse(stdout);
+          if (parsed.is_error) {
+            reject(new Error(`claude CLI error: ${parsed.result || JSON.stringify(parsed).slice(0, 500)}`));
+            return;
+          }
+          resolve(parsed);
+          return;
+        } catch {
+          // stdout not valid JSON, fall through
+        }
+      }
+      if (err) {
+        reject(new Error(`claude CLI failed (exit ${(err as NodeJS.ErrnoException).code}): ${stderr || err.message}`));
+        return;
+      }
+      reject(new Error(`Empty response from claude CLI`));
+    });
+
+    child.stdin?.write(prompt);
+    child.stdin?.end();
+  });
+}
 
 async function dispatch(
   vm: RuntimeClient,
@@ -79,17 +128,23 @@ async function dispatch(
   }
 }
 
+function buildPrompt(history: { role: string; content: string }[]): string {
+  return history.map((m) => {
+    const prefix = m.role === "assistant" ? "ASSISTANT" : "USER";
+    return `[${prefix}]\n${m.content}`;
+  }).join("\n\n");
+}
+
 export async function runAgent(
   model: string,
   harnessUrl: string,
   taskText: string,
   hint?: string,
 ): Promise<void> {
-  const anthropic = new Anthropic();
   const vm = createRuntimeClient(harnessUrl);
   const systemPrompt = buildSystemPrompt(hint);
 
-  const messages: Anthropic.MessageParam[] = [];
+  const history: { role: string; content: string }[] = [];
 
   // Boot sequence: tree, read AGENTS.md, context
   const bootOps: ToolAction[] = [
@@ -106,15 +161,14 @@ export async function runAgent(
       bootResults.push(txt);
       console.log(`\x1b[32mBOOT\x1b[0m [${op.tool}]: ${txt.slice(0, 120)}...`);
     } catch (err) {
-      const msg =
-        err instanceof ConnectError ? err.message : String(err);
+      const msg = err instanceof ConnectError ? err.message : String(err);
       bootResults.push(`Error: ${msg}`);
       console.log(`\x1b[33mBOOT\x1b[0m [${op.tool}]: Error: ${msg}`);
     }
   }
 
   // Seed conversation with boot results then task
-  messages.push({
+  history.push({
     role: "user",
     content: `Vault structure:\n${bootResults[0]}\n\nAgent policies:\n${bootResults[1]}\n\nContext:\n${bootResults[2]}\n\n---\nTASK:\n${taskText}`,
   });
@@ -122,59 +176,87 @@ export async function runAgent(
   // Agent loop
   for (let step = 0; step < MAX_STEPS; step++) {
     const started = Date.now();
-    const response = await anthropic.messages.parse({
-      model,
-      max_tokens: 16384,
-      system: systemPrompt,
-      messages,
-      output_config: {
-        format: zodOutputFormat(NextStep),
-      },
-    });
+    const prompt = buildPrompt(history);
+
+    let response: ClaudeResponse;
+    try {
+      response = await callClaude(model, systemPrompt, prompt);
+    } catch (err) {
+      console.log(`\x1b[31mERR\x1b[0m: LLM call failed: ${err}`);
+      break;
+    }
     const elapsed = Date.now() - started;
 
-    const job = response.parsed_output;
-    if (!job) {
+    // Parse JSON from result text (Zod validates schema compliance)
+    let raw: unknown;
+    try {
+      let text = response.result ?? "";
+      const fenceMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+      if (fenceMatch) text = fenceMatch[1];
+      raw = JSON.parse(text.trim());
+    } catch {
       console.log(
-        `\x1b[31mERR\x1b[0m: Failed to parse structured output (step ${step + 1})`,
+        `\x1b[31mERR\x1b[0m: Failed to parse JSON (step ${step + 1}): ${(response.result ?? "").slice(0, 200)}`,
       );
-      messages.push({ role: "assistant", content: response.content });
-      messages.push({
+      history.push({ role: "assistant", content: response.result ?? "" });
+      history.push({
         role: "user",
-        content: "Error: failed to parse your response. Please try again with valid JSON matching the schema.",
+        content: "Error: your response was not valid JSON. Respond with ONLY a JSON object, no markdown or explanation.",
+      });
+      continue;
+    }
+    const parsed = NextStep.safeParse(raw);
+    if (!parsed.success) {
+      console.log(
+        `\x1b[31mERR\x1b[0m: Zod validation failed (step ${step + 1}): ${parsed.error.message}`,
+      );
+      history.push({ role: "assistant", content: JSON.stringify(raw) });
+      history.push({
+        role: "user",
+        content: "Error: your response didn't match the required schema. Please try again.",
       });
       continue;
     }
 
+    const job = parsed.data;
     const planPreview = job.plan_remaining_steps_brief[0] ?? "";
     console.log(
       `\x1b[36mSTEP ${step + 1}\x1b[0m [${job.action.tool}] ${planPreview} (${elapsed}ms)`,
     );
 
     // Add assistant response to conversation
-    messages.push({ role: "assistant", content: response.content });
+    history.push({ role: "assistant", content: JSON.stringify(raw) });
 
     // Dispatch tool call
     try {
       const result = await dispatch(vm, job.action);
       const txt = formatResult(job.action, result);
       if (txt) {
-        console.log(`\x1b[32mOUT\x1b[0m: ${txt.slice(0, 200)}${txt.length > 200 ? "..." : ""}`);
-        messages.push({ role: "user", content: txt });
+        console.log(
+          `\x1b[32mOUT\x1b[0m: ${txt.slice(0, 200)}${txt.length > 200 ? "..." : ""}`,
+        );
+        history.push({ role: "user", content: txt });
+      }
+
+      // Check completion
+      if (job.action.tool === "answer") {
+        console.log(
+          `\x1b[32mDONE\x1b[0m: outcome=${job.action.outcome} message="${job.action.message}" refs=[${job.action.refs.join(", ")}]`,
+        );
+        console.log(`\x1b[32mDONE\x1b[0m: answer dispatch result: ${JSON.stringify(result)}`);
+        return;
       }
     } catch (err) {
       const errMsg =
         err instanceof ConnectError ? `${err.code}: ${err.message}` : String(err);
       console.log(`\x1b[31mERR\x1b[0m: ${errMsg}`);
-      messages.push({ role: "user", content: `Error: ${errMsg}` });
-    }
 
-    // Check completion
-    if (job.action.tool === "answer") {
-      console.log(
-        `\x1b[32mDONE\x1b[0m: outcome=${job.action.outcome} refs=[${job.action.refs.join(", ")}]`,
-      );
-      return;
+      // If answer dispatch failed, still exit the loop
+      if (job.action.tool === "answer") {
+        console.log(`\x1b[31mERR\x1b[0m: Answer submission failed!`);
+        return;
+      }
+      history.push({ role: "user", content: `Error: ${errMsg}` });
     }
   }
 

@@ -91,10 +91,57 @@ export const ToolAction = z.discriminatedUnion("tool", [
 
 export const NextStep = z.object({
   current_state: z.string(),
-  plan_remaining_steps_brief: z.array(z.string()).min(1).max(5),
+  plan_remaining_steps_brief: z.array(z.string()).max(5),
   task_completed: z.boolean(),
   action: ToolAction,
 });
 
 export type NextStep = z.infer<typeof NextStep>;
 export type ToolAction = z.infer<typeof ToolAction>;
+
+export const NextStepJsonSchema = JSON.stringify(z.toJSONSchema(NextStep));
+
+/**
+ * Flat JSON Schema for --json-schema (no anyOf/oneOf — all tool params optional).
+ * After SO decoding, we restructure into nested action + validate with Zod.
+ */
+export const NextStepSoSchema = JSON.stringify({
+  type: "object",
+  properties: {
+    current_state: { type: "string" },
+    plan_remaining_steps_brief: { type: "array", items: { type: "string" } },
+    task_completed: { type: "boolean" },
+    action: {
+      type: "object",
+      properties: {
+        tool: { type: "string", enum: [
+          "read", "write", "delete", "mkdir", "move", "list",
+          "tree", "find", "search", "context", "answer",
+        ]},
+        path: { type: "string" },
+        content: { type: "string" },
+        number: { type: "boolean" },
+        start_line: { type: "integer" },
+        end_line: { type: "integer" },
+        from: { type: "string" },
+        to: { type: "string" },
+        root: { type: "string" },
+        level: { type: "integer" },
+        name: { type: "string" },
+        type: { type: "string", enum: ["all", "files", "dirs"] },
+        limit: { type: "integer" },
+        pattern: { type: "string" },
+        message: { type: "string" },
+        outcome: { type: "string", enum: [
+          "ok", "denied_security", "none_clarification",
+          "none_unsupported", "err_internal",
+        ]},
+        refs: { type: "array", items: { type: "string" } },
+      },
+      required: ["tool"],
+      additionalProperties: false,
+    },
+  },
+  required: ["current_state", "plan_remaining_steps_brief", "task_completed", "action"],
+  additionalProperties: false,
+});

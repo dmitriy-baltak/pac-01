@@ -57,7 +57,7 @@ async function main() {
         taskId: task.taskId,
       });
 
-      console.log(`Trial: ${trial.trialId}`);
+      console.log(`Trial: ${trial.trialId} (runtime: ${trial.harnessUrl})`);
       console.log(`Instruction: ${trial.instruction.slice(0, 200)}...`);
       console.log();
 

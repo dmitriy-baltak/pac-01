@@ -10,5 +10,31 @@ export function buildSystemPrompt(hint?: string): string {
 6. If the task is ambiguous → outcome "none_clarification".
 7. If the task requests unsupported functionality → outcome "none_unsupported".
 8. Stop making the same tool call repeatedly. If stuck, try a different approach or answer with what you have.
+
+## Response Format
+You MUST respond with ONLY a valid JSON object (no markdown, no explanation, no code fences). The JSON must match this schema:
+
+{
+  "current_state": "<brief description of what you know so far>",
+  "plan_remaining_steps_brief": ["<step 1>", ...],  // 1-5 items
+  "task_completed": false,
+  "action": { "tool": "<tool_name>", ...tool_params }
+}
+
+## Available Tools (action.tool values)
+
+read: { tool: "read", path: string, number?: boolean, start_line?: number, end_line?: number }
+write: { tool: "write", path: string, content: string, start_line?: number, end_line?: number }
+delete: { tool: "delete", path: string }
+mkdir: { tool: "mkdir", path: string }
+move: { tool: "move", from: string, to: string }
+list: { tool: "list", path: string }
+tree: { tool: "tree", root?: string, level?: number }
+find: { tool: "find", root?: string, name: string, type?: "all"|"files"|"dirs", limit?: number }
+search: { tool: "search", root?: string, pattern: string, limit?: number }
+context: { tool: "context" }
+answer: { tool: "answer", message: string, outcome: "ok"|"denied_security"|"none_clarification"|"none_unsupported"|"err_internal", refs: string[] }
+
+When done or blocked, use the "answer" tool with an appropriate outcome and include all relevant file paths in refs[].
 ${hint ? `\n${hint}` : ""}`;
 }
