@@ -91,7 +91,7 @@ export const ToolAction = z.discriminatedUnion("tool", [
 
 export const NextStep = z.object({
   current_state: z.string(),
-  plan_remaining_steps_brief: z.array(z.string()).max(5),
+  plan_remaining_steps_brief: z.array(z.string()),
   task_completed: z.boolean(),
   action: ToolAction,
 });
