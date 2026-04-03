@@ -1,4 +1,3 @@
-import { execFile } from "node:child_process";
 import { ConnectError } from "@connectrpc/connect";
 import {
   Outcome,
@@ -8,6 +7,8 @@ import { createRuntimeClient, type RuntimeClient } from "./runtime.js";
 import { NextStep, type ToolAction } from "./schemas.js";
 import { formatResult } from "./format.js";
 import { buildSystemPrompt } from "./prompt.js";
+import { callClaude, type ClaudeResponse } from "./claude.js";
+import type { TraceCollector } from "./trace.js";
 
 const MAX_STEPS = 30;
 
@@ -24,56 +25,6 @@ const FIND_TYPE_MAP: Record<string, FindRequest_Type> = {
   files: FindRequest_Type.FILES,
   dirs: FindRequest_Type.DIRS,
 };
-
-interface ClaudeResponse {
-  result: string;
-  structured_output?: unknown;
-  duration_ms?: number;
-  total_cost_usd?: number;
-}
-
-function callClaude(
-  model: string,
-  systemPrompt: string,
-  prompt: string,
-): Promise<ClaudeResponse> {
-  return new Promise((resolve, reject) => {
-    const args = [
-      "--print",
-      "--output-format", "json",
-      "--model", model,
-      "--system-prompt", systemPrompt,
-    ];
-
-    const child = execFile("claude", args, {
-      maxBuffer: 10 * 1024 * 1024,
-      timeout: 120_000,
-    }, (err, stdout, stderr) => {
-      // CLI may output valid JSON even on non-zero exit
-      if (stdout) {
-        try {
-          const parsed = JSON.parse(stdout);
-          if (parsed.is_error) {
-            reject(new Error(`claude CLI error: ${parsed.result || JSON.stringify(parsed).slice(0, 500)}`));
-            return;
-          }
-          resolve(parsed);
-          return;
-        } catch {
-          // stdout not valid JSON, fall through
-        }
-      }
-      if (err) {
-        reject(new Error(`claude CLI failed (exit ${(err as NodeJS.ErrnoException).code}): ${stderr || err.message}`));
-        return;
-      }
-      reject(new Error(`Empty response from claude CLI`));
-    });
-
-    child.stdin?.write(prompt);
-    child.stdin?.end();
-  });
-}
 
 async function dispatch(
   vm: RuntimeClient,
@@ -135,14 +86,20 @@ function buildPrompt(history: { role: string; content: string }[]): string {
   }).join("\n\n");
 }
 
+export interface AgentOptions {
+  systemPrompt?: string;
+  trace?: TraceCollector;
+}
+
 export async function runAgent(
   model: string,
   harnessUrl: string,
   taskText: string,
   hint?: string,
+  opts?: AgentOptions,
 ): Promise<void> {
   const vm = createRuntimeClient(harnessUrl);
-  const systemPrompt = buildSystemPrompt(hint);
+  const systemPrompt = opts?.systemPrompt ?? buildSystemPrompt(hint);
 
   const history: { role: string; content: string }[] = [];
 
@@ -183,6 +140,7 @@ export async function runAgent(
       response = await callClaude(model, systemPrompt, prompt);
     } catch (err) {
       console.log(`\x1b[31mERR\x1b[0m: LLM call failed: ${err}`);
+      if (opts?.trace) opts.trace.setError(`LLM call failed: ${err}`);
       break;
     }
     const elapsed = Date.now() - started;
@@ -198,6 +156,13 @@ export async function runAgent(
       console.log(
         `\x1b[31mERR\x1b[0m: Failed to parse JSON (step ${step + 1}): ${(response.result ?? "").slice(0, 200)}`,
       );
+      if (opts?.trace) {
+        opts.trace.addStep({
+          step: step + 1, tool: "parse_error", params: {},
+          result_preview: "", elapsed_ms: elapsed,
+          parse_error: "Response was not valid JSON",
+        });
+      }
       history.push({ role: "assistant", content: response.result ?? "" });
       history.push({
         role: "user",
@@ -210,6 +175,13 @@ export async function runAgent(
       console.log(
         `\x1b[31mERR\x1b[0m: Zod validation failed (step ${step + 1}): ${parsed.error.message}`,
       );
+      if (opts?.trace) {
+        opts.trace.addStep({
+          step: step + 1, tool: "parse_error", params: {},
+          result_preview: "", elapsed_ms: elapsed,
+          parse_error: `Zod: ${parsed.error.message}`,
+        });
+      }
       history.push({ role: "assistant", content: JSON.stringify(raw) });
       history.push({
         role: "user",
@@ -228,9 +200,21 @@ export async function runAgent(
     history.push({ role: "assistant", content: JSON.stringify(raw) });
 
     // Dispatch tool call
+    const dispatchStart = Date.now();
     try {
       const result = await dispatch(vm, job.action);
       const txt = formatResult(job.action, result);
+
+      if (opts?.trace) {
+        const { tool, ...params } = job.action;
+        opts.trace.addStep({
+          step: step + 1, tool,
+          params: params as Record<string, unknown>,
+          result_preview: txt.slice(0, 500),
+          elapsed_ms: Date.now() - dispatchStart,
+        });
+      }
+
       if (txt) {
         console.log(
           `\x1b[32mOUT\x1b[0m: ${txt.slice(0, 200)}${txt.length > 200 ? "..." : ""}`,
@@ -244,12 +228,23 @@ export async function runAgent(
           `\x1b[32mDONE\x1b[0m: outcome=${job.action.outcome} message="${job.action.message}" refs=[${job.action.refs.join(", ")}]`,
         );
         console.log(`\x1b[32mDONE\x1b[0m: answer dispatch result: ${JSON.stringify(result)}`);
+        if (opts?.trace) opts.trace.setOutcome(job.action.outcome, job.action.message, job.action.refs);
         return;
       }
     } catch (err) {
       const errMsg =
         err instanceof ConnectError ? `${err.code}: ${err.message}` : String(err);
       console.log(`\x1b[31mERR\x1b[0m: ${errMsg}`);
+
+      if (opts?.trace) {
+        const { tool, ...params } = job.action;
+        opts.trace.addStep({
+          step: step + 1, tool,
+          params: params as Record<string, unknown>,
+          result_preview: "", elapsed_ms: Date.now() - dispatchStart,
+          error: errMsg,
+        });
+      }
 
       // If answer dispatch failed, still exit the loop
       if (job.action.tool === "answer") {
@@ -262,6 +257,7 @@ export async function runAgent(
 
   // Exhausted steps — force answer
   console.log(`\x1b[33mWARN\x1b[0m: Exhausted ${MAX_STEPS} steps, forcing answer`);
+  if (opts?.trace) opts.trace.setError("Exhausted step limit");
   await vm.answer({
     message: "Agent reached step limit without completing the task.",
     outcome: Outcome.ERR_INTERNAL,

@@ -1,3 +1,11 @@
+import { readFileSync, writeFileSync, readdirSync, mkdirSync } from "node:fs";
+import { join, dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const PROMPTS_DIR = resolve(__dirname, "../prompts");
+const META_PROMPTS_DIR = resolve(__dirname, "../prompts/meta");
+
 export function buildSystemPrompt(hint?: string): string {
   return `You are a personal knowledge vault agent. You receive a task and use file-system tools to complete it.
 
@@ -37,4 +45,43 @@ answer: { tool: "answer", message: string, outcome: "ok"|"denied_security"|"none
 
 When done or blocked, use the "answer" tool with an appropriate outcome and include all relevant file paths in refs[].
 ${hint ? `\n${hint}` : ""}`;
+}
+
+export function loadPromptVersion(version: string, hint?: string): string {
+  const filePath = join(PROMPTS_DIR, `v${version}.txt`);
+  let content = readFileSync(filePath, "utf-8");
+  if (hint) content += `\n${hint}`;
+  return content;
+}
+
+export function getLatestVersion(): string {
+  const files = readdirSync(PROMPTS_DIR)
+    .filter((f) => /^v\d{3}\.txt$/.test(f))
+    .sort();
+  if (files.length === 0) return "001";
+  return files[files.length - 1].slice(1, 4);
+}
+
+export function savePromptVersion(version: string, content: string): void {
+  const filePath = join(PROMPTS_DIR, `v${version}.txt`);
+  writeFileSync(filePath, content, "utf-8");
+}
+
+export function loadMetaPrompt(version: string): string {
+  const filePath = join(META_PROMPTS_DIR, `v${version}.md`);
+  return readFileSync(filePath, "utf-8");
+}
+
+export function getLatestMetaVersion(): string {
+  const files = readdirSync(META_PROMPTS_DIR)
+    .filter((f) => /^v\d{3}\.md$/.test(f))
+    .sort();
+  if (files.length === 0) return "001";
+  return files[files.length - 1].slice(1, 4);
+}
+
+export function saveMetaPrompt(version: string, content: string): void {
+  mkdirSync(META_PROMPTS_DIR, { recursive: true });
+  const filePath = join(META_PROMPTS_DIR, `v${version}.md`);
+  writeFileSync(filePath, content, "utf-8");
 }

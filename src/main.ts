@@ -1,6 +1,8 @@
 import { ConnectError } from "@connectrpc/connect";
 import { createHarnessClient } from "./harness.js";
 import { runAgent } from "./agent.js";
+import { loadPromptVersion } from "./prompt.js";
+import { TraceCollector } from "./trace.js";
 
 const BITGN_API_KEY = process.env.BITGN_API_KEY ?? "";
 const BENCHMARK_HOST =
@@ -8,6 +10,7 @@ const BENCHMARK_HOST =
 const BENCHMARK_ID = process.env.BENCHMARK_ID ?? "bitgn/pac1-dev";
 const MODEL_ID = process.env.MODEL_ID ?? "claude-haiku-4-5-20251001";
 const HINT = process.env.HINT;
+const PROMPT_VERSION = process.env.PROMPT_VERSION;
 
 async function main() {
   if (!BITGN_API_KEY) {
@@ -41,6 +44,9 @@ async function main() {
     return;
   }
 
+  if (PROMPT_VERSION) {
+    console.log(`Using versioned prompt: v${PROMPT_VERSION}`);
+  }
   console.log(`Running ${tasks.length} task(s) with model ${MODEL_ID}\n`);
 
   const scores: { taskId: string; score?: number }[] = [];
@@ -62,7 +68,12 @@ async function main() {
       console.log();
 
       // Run agent
-      await runAgent(MODEL_ID, trial.harnessUrl, trial.instruction, HINT);
+      const agentOpts: Parameters<typeof runAgent>[4] = {};
+      if (PROMPT_VERSION) {
+        agentOpts.systemPrompt = loadPromptVersion(PROMPT_VERSION, HINT);
+        agentOpts.trace = new TraceCollector(task.taskId, PROMPT_VERSION, MODEL_ID, trial.instruction);
+      }
+      await runAgent(MODEL_ID, trial.harnessUrl, trial.instruction, HINT, agentOpts);
 
       // End trial and get score
       const result = await harness.endTrial({ trialId: trial.trialId });
@@ -80,6 +91,13 @@ async function main() {
         for (const detail of result.scoreDetail) {
           console.log(`  ${detail}`);
         }
+      }
+
+      // Print trace summary when using versioned prompt
+      if (agentOpts.trace) {
+        if (score !== undefined) agentOpts.trace.setScore(score, [...result.scoreDetail]);
+        const trace = agentOpts.trace.finalize();
+        console.log(`  Trace: ${trace.total_steps} steps, ${trace.total_elapsed_ms}ms total`);
       }
     } catch (err) {
       if (err instanceof ConnectError) {
