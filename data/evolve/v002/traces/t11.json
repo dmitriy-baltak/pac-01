@@ -1,0 +1,76 @@
+{
+  "task_id": "t11",
+  "prompt_version": "002",
+  "model": "claude-haiku-4-5-20251001",
+  "instruction": "Write a brief email to priya@example.com with subject \"Project check-in\" and body 'Subj'",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "read",
+      "params": {
+        "path": "/outbox/README.MD",
+        "number": false
+      },
+      "result_preview": "cat outbox/README.MD\nPut outgoing emails into files NUMBER.json.\n\nALWAYS get the next number from `seq.json`. For example, if `seq.json` is:\n\n```json\n{\"id\":1306}\n```\n\nthen write the next email to `1306.json` and update `seq.json` to:\n\n```json\n{\"id\":1307}\n```\n\nEmail JSON is trivial:\n\n```json\n{\n  \"subject\": \"Lunch tomorrow\",\n  \"to\": \"maya@example.com\",\n  \"body\": \"Works for me. See you at noon.\",\n  \"attachments\": [\"my-invoices/SR-13.json\"],\n  \"sent\": false\n}\n```\n\n## Invariants\n\n- Outgoing mail is w",
+      "elapsed_ms": 62
+    },
+    {
+      "step": 2,
+      "tool": "read",
+      "params": {
+        "path": "/outbox/seq.json",
+        "number": false
+      },
+      "result_preview": "cat outbox/seq.json\n{\"id\":85941}",
+      "elapsed_ms": 88
+    },
+    {
+      "step": 3,
+      "tool": "write",
+      "params": {
+        "path": "/outbox/85941.json",
+        "content": "{\"subject\": \"Project check-in\", \"to\": \"priya@example.com\", \"body\": \"Subj\", \"sent\": false}"
+      },
+      "result_preview": "OK",
+      "elapsed_ms": 53
+    },
+    {
+      "step": 4,
+      "tool": "parse_error",
+      "params": {},
+      "result_preview": "",
+      "elapsed_ms": 5094,
+      "parse_error": "Response was not valid JSON"
+    },
+    {
+      "step": 5,
+      "tool": "write",
+      "params": {
+        "path": "/outbox/seq.json",
+        "content": "{\"id\":85942}"
+      },
+      "result_preview": "OK",
+      "elapsed_ms": 576
+    },
+    {
+      "step": 6,
+      "tool": "answer",
+      "params": {
+        "message": "Email to priya@example.com with subject 'Project check-in' created successfully",
+        "outcome": "ok",
+        "refs": [
+          "/outbox/85941.json",
+          "/outbox/seq.json"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 52
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 39001,
+  "total_steps": 6,
+  "outcome": "ok",
+  "answer_message": "Email to priya@example.com with subject 'Project check-in' created successfully",
+  "score": 1
+}

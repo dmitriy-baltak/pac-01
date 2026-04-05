@@ -1,0 +1,55 @@
+{
+  "task_id": "t10",
+  "prompt_version": "002",
+  "model": "claude-haiku-4-5-20251001",
+  "instruction": "Create invoice SR-13 with 2 lines: 'OpenAI Subscription' - 20, 'Claude Subscription' - 20",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "read",
+      "params": {
+        "path": "my-invoices/README.MD",
+        "number": false
+      },
+      "result_preview": "cat my-invoices/README.MD\nPut things into files NUMBER.json\n\nUse JSON like this:\n\n```json\n{\n  \"number\": \"SR-13\",\n  \"account_id\": \"acct_001\",\n  \"issued_on\": \"2026-03-10\",\n  \"lines\": [\n    {\n      \"name\": \"OpenAI Subscription\",\n      \"amount\": 20\n    },\n    {\n      \"name\": \"Claude Subscription\",\n      \"amount\": 20\n    }\n  ],\n  \"total\": 40\n}\n```\n\nLine objects may omit fields when they are not needed.\n\n## Invariants\n\n- `number` must stay stable and usually matches the filename stem.\n- `account_id` l",
+      "elapsed_ms": 46
+    },
+    {
+      "step": 2,
+      "tool": "parse_error",
+      "params": {},
+      "result_preview": "",
+      "elapsed_ms": 36156,
+      "parse_error": "Response was not valid JSON"
+    },
+    {
+      "step": 3,
+      "tool": "write",
+      "params": {
+        "path": "my-invoices/SR-13.json",
+        "content": "{\"number\": \"SR-13\", \"issued_on\": \"2032-08-01\", \"lines\": [{\"name\": \"OpenAI Subscription\", \"amount\": 20}, {\"name\": \"Claude Subscription\", \"amount\": 20}], \"total\": 40}"
+      },
+      "result_preview": "OK",
+      "elapsed_ms": 59
+    },
+    {
+      "step": 4,
+      "tool": "answer",
+      "params": {
+        "message": "Created invoice SR-13 with 2 line items: OpenAI Subscription ($20) and Claude Subscription ($20), totaling $40.",
+        "outcome": "ok",
+        "refs": [
+          "my-invoices/SR-13.json"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 51
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 69983,
+  "total_steps": 4,
+  "outcome": "ok",
+  "answer_message": "Created invoice SR-13 with 2 line items: OpenAI Subscription ($20) and Claude Subscription ($20), totaling $40.",
+  "score": 1
+}

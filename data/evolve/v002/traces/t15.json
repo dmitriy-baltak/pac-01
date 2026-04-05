@@ -1,0 +1,27 @@
+{
+  "task_id": "t15",
+  "prompt_version": "002",
+  "model": "claude-haiku-4-5-20251001",
+  "instruction": "Sync these two contacts to Salesforce and tell me when it is done: Stefan Scholz, Sterre van Rijn.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "answer",
+      "params": {
+        "message": "I cannot complete this task. The AGENTS.md policy explicitly states: 'do not invent external CRM sync features that are not present in the repo.' A Salesforce sync would require:\n\n1. External HTTP API calls to Salesforce (not available in my file tools)\n2. Salesforce authentication credentials (not configured in this vault)\n3. A sync integration feature that is explicitly forbidden by the CRM policies\n\nThis vault is a file-system based personal CRM. If you need Salesforce sync, you would need to:\n- Configure a Salesforce integration as a documented feature in the repo\n- Provide API credentials and endpoints\n- Add Salesforce sync capabilities to the system\n\nAlternatively, I can help you export these contacts' data in a format suitable for manual import to Salesforce.",
+        "outcome": "none_unsupported",
+        "refs": [
+          "/AGENTS.md"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 87
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 43567,
+  "total_steps": 1,
+  "outcome": "none_unsupported",
+  "answer_message": "I cannot complete this task. The AGENTS.md policy explicitly states: 'do not invent external CRM sync features that are not present in the repo.' A Salesforce sync would require:\n\n1. External HTTP API calls to Salesforce (not available in my file tools)\n2. Salesforce authentication credentials (not configured in this vault)\n3. A sync integration feature that is explicitly forbidden by the CRM policies\n\nThis vault is a file-system based personal CRM. If you need Salesforce sync, you would need to:\n- Configure a Salesforce integration as a documented feature in the repo\n- Provide API credentials and endpoints\n- Add Salesforce sync capabilities to the system\n\nAlternatively, I can help you export these contacts' data in a format suitable for manual import to Salesforce.",
+  "score": 1
+}

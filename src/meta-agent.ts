@@ -1,4 +1,4 @@
-import { callClaude } from "./claude.js";
+import { callLLM, type ChatMessage } from "./llm.js";
 import { loadMetaPrompt, getLatestMetaVersion } from "./prompt.js";
 import { estimateTokens } from "./scoring.js";
 import type { TaskTrace } from "./trace.js";
@@ -161,9 +161,13 @@ ${extractFailureSignal(failedTraces)}
 
 Analyze the failures and produce an improved system prompt. Respond with JSON only.`;
 
-  const response = await callClaude(model, metaPrompt, userPrompt);
+  const messages: ChatMessage[] = [
+    { role: "system", content: metaPrompt },
+    { role: "user", content: userPrompt },
+  ];
+  const response = await callLLM(model, messages, { format: "json" });
 
-  let text = response.result ?? "";
+  let text = response.result;
   const fenceMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
   if (fenceMatch) text = fenceMatch[1];
 
