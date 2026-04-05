@@ -262,11 +262,12 @@ async function evolve() {
   console.log(`Task model: ${MODEL_ID}, Meta model: ${META_MODEL_ID}`);
   if (EVOLVE_TASKS.length > 0) console.log(`Task filter: ${EVOLVE_TASKS.join(", ")}`);
 
-  // Run baseline eval if no results exist
+  // Run baseline eval if no results or traces exist
   let bestSummary = loadSummary(bestVersion);
-  let bestTraces: TaskTrace[];
-  if (!bestSummary) {
-    console.log(`\nNo eval results for v${bestVersion}, running baseline...`);
+  let bestTraces: TaskTrace[] = bestSummary ? loadTraces(bestVersion) : [];
+  if (!bestSummary || bestTraces.filter((t) => t.score !== undefined).length === 0) {
+    const reason = !bestSummary ? "No eval results" : "No scored traces";
+    console.log(`\n${reason} for v${bestVersion}, running baseline...`);
     const baseline = await runEval(bestVersion, EVOLVE_TASKS.length > 0 ? EVOLVE_TASKS : undefined);
     bestSummary = baseline.summary;
     bestTraces = baseline.traces;
@@ -280,7 +281,6 @@ async function evolve() {
     });
     saveManifest(manifest);
   } else {
-    bestTraces = loadTraces(bestVersion);
     console.log(`\nBaseline v${bestVersion}: avg=${bestSummary.avg_score.toFixed(2)}`);
   }
 
@@ -288,11 +288,11 @@ async function evolve() {
   for (let i = 0; i < EVOLVE_STEPS; i++) {
     console.log(`\n\x1b[35m=== EVOLUTION STEP ${i + 1}/${EVOLVE_STEPS} ===\x1b[0m`);
 
-    // Pick worst-scoring traces (up to 5)
+    // Pick worst-scoring traces (up to 10)
     const sorted = [...bestTraces]
       .filter((t) => t.score !== undefined)
       .sort((a, b) => (a.score ?? 0) - (b.score ?? 0));
-    const failedTraces = sorted.slice(0, 5);
+    const failedTraces = sorted.slice(0, 10);
 
     if (failedTraces.length === 0) {
       console.log("No scored traces to analyze. Skipping.");

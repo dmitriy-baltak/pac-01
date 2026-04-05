@@ -1,8 +1,15 @@
+import { mkdirSync, writeFileSync } from "node:fs";
+import { join, dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { ConnectError } from "@connectrpc/connect";
 import { createHarnessClient } from "./harness.js";
 import { runAgent } from "./agent.js";
-import { loadPromptVersion } from "./prompt.js";
+import { loadPromptVersion, getLatestVersion } from "./prompt.js";
 import { TraceCollector } from "./trace.js";
+import type { EvalSummary } from "./meta-agent.js";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const DATA_DIR = resolve(__dirname, "../data/evolve");
 
 const BITGN_API_KEY = process.env.BITGN_API_KEY ?? "";
 const BENCHMARK_HOST =
@@ -10,7 +17,7 @@ const BENCHMARK_HOST =
 const BENCHMARK_ID = process.env.BENCHMARK_ID ?? "bitgn/pac1-dev";
 const MODEL_ID = process.env.MODEL_ID ?? "claude-haiku-4-5-20251001";
 const HINT = process.env.HINT;
-const PROMPT_VERSION = process.env.PROMPT_VERSION;
+const PROMPT_VERSION = process.env.PROMPT_VERSION ?? getLatestVersion();
 
 async function main() {
   if (!BITGN_API_KEY) {
@@ -44,12 +51,12 @@ async function main() {
     return;
   }
 
-  if (PROMPT_VERSION) {
-    console.log(`Using versioned prompt: v${PROMPT_VERSION}`);
-  }
+  console.log(`Using prompt: v${PROMPT_VERSION}`);
   console.log(`Running ${tasks.length} task(s) with model ${MODEL_ID}\n`);
 
+  const systemPrompt = loadPromptVersion(PROMPT_VERSION, HINT);
   const scores: { taskId: string; score?: number }[] = [];
+  const traces: ReturnType<TraceCollector["finalize"]>[] = [];
 
   for (const task of tasks) {
     console.log(`\n${"=".repeat(60)}`);
@@ -68,12 +75,11 @@ async function main() {
       console.log();
 
       // Run agent
-      const agentOpts: Parameters<typeof runAgent>[4] = {};
-      if (PROMPT_VERSION) {
-        agentOpts.systemPrompt = loadPromptVersion(PROMPT_VERSION, HINT);
-        agentOpts.trace = new TraceCollector(task.taskId, PROMPT_VERSION, MODEL_ID, trial.instruction);
-      }
-      await runAgent(MODEL_ID, trial.harnessUrl, trial.instruction, HINT, agentOpts);
+      const trace = new TraceCollector(task.taskId, PROMPT_VERSION, MODEL_ID, trial.instruction);
+      await runAgent(MODEL_ID, trial.harnessUrl, trial.instruction, HINT, {
+        systemPrompt,
+        trace,
+      });
 
       // End trial and get score
       const result = await harness.endTrial({ trialId: trial.trialId });
@@ -93,37 +99,58 @@ async function main() {
         }
       }
 
-      // Print trace summary when using versioned prompt
-      if (agentOpts.trace) {
-        if (score !== undefined) agentOpts.trace.setScore(score, [...result.scoreDetail]);
-        const trace = agentOpts.trace.finalize();
-        console.log(`  Trace: ${trace.total_steps} steps, ${trace.total_elapsed_ms}ms total`);
-      }
+      if (score !== undefined) trace.setScore(score, [...result.scoreDetail]);
+      const finalized = trace.finalize();
+      trace.save();
+      traces.push(finalized);
+      console.log(`  Trace: ${finalized.total_steps} steps, ${finalized.total_elapsed_ms}ms total`);
     } catch (err) {
       if (err instanceof ConnectError) {
         console.error(`\x1b[31mError: ${err.code} — ${err.message}\x1b[0m`);
       } else {
         console.error(`\x1b[31mError: ${err}\x1b[0m`);
       }
+
+      const errorTrace = new TraceCollector(task.taskId, PROMPT_VERSION, MODEL_ID, "(error)");
+      errorTrace.setError(err instanceof ConnectError ? `${err.code}: ${err.message}` : String(err));
+      traces.push(errorTrace.finalize());
       scores.push({ taskId: task.taskId, score: undefined });
     }
   }
 
-  // Summary
+  // Save summary in evolve-compatible format
+  const taskScores = scores.map((s) => ({
+    task_id: s.taskId,
+    score: s.score ?? 0,
+  }));
+  const avg = taskScores.length > 0
+    ? taskScores.reduce((sum, t) => sum + t.score, 0) / taskScores.length
+    : 0;
+  const summary: EvalSummary = {
+    version: PROMPT_VERSION,
+    avg_score: avg,
+    task_scores: taskScores,
+    n_tasks: taskScores.length,
+    timestamp: new Date().toISOString(),
+  };
+  const versionDir = join(DATA_DIR, `v${PROMPT_VERSION}`);
+  mkdirSync(versionDir, { recursive: true });
+  writeFileSync(join(versionDir, "summary.json"), JSON.stringify(summary, null, 2), "utf-8");
+
+  // Console summary
   console.log(`\n${"=".repeat(60)}`);
   console.log("SUMMARY");
   console.log(`${"=".repeat(60)}`);
-  const scored = scores.filter((s) => s.score !== undefined);
   for (const s of scores) {
     const val =
       s.score !== undefined ? s.score.toFixed(2) : "—";
     console.log(`  ${s.taskId}: ${val}`);
   }
+  const scored = scores.filter((s) => s.score !== undefined);
   if (scored.length > 0) {
-    const avg =
-      scored.reduce((sum, s) => sum + (s.score ?? 0), 0) / scored.length;
     console.log(`\n  Average: ${avg.toFixed(2)} (${scored.length}/${scores.length} scored)`);
   }
+  console.log(`\n  Results saved to ${versionDir}`);
 }
 
 // Handle SIGINT

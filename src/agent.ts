@@ -170,6 +170,16 @@ export async function runAgent(
       });
       continue;
     }
+    // Handle null action when model thinks task is complete
+    if (raw && typeof raw === "object" && (raw as Record<string, unknown>).action == null && (raw as Record<string, unknown>).task_completed === true) {
+      (raw as Record<string, unknown>).action = {
+        tool: "answer",
+        message: (raw as Record<string, unknown>).current_state ?? "Task completed.",
+        outcome: "ok",
+        refs: [],
+      };
+    }
+
     const parsed = NextStep.safeParse(raw);
     if (!parsed.success) {
       console.log(

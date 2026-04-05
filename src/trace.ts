@@ -1,3 +1,10 @@
+import { writeFileSync, mkdirSync } from "node:fs";
+import { join, dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const DATA_DIR = resolve(__dirname, "../data/evolve");
+
 export interface StepTrace {
   step: number;
   tool: string;
@@ -64,5 +71,13 @@ export class TraceCollector {
     this.trace.total_elapsed_ms = Date.now() - this.startTime;
     this.trace.total_steps = this.trace.steps.length;
     return { ...this.trace };
+  }
+
+  save(): void {
+    const version = this.trace.prompt_version;
+    const dir = join(DATA_DIR, `v${version}`, "traces");
+    mkdirSync(dir, { recursive: true });
+    const filePath = join(dir, `${this.trace.task_id}.json`);
+    writeFileSync(filePath, JSON.stringify(this.trace, null, 2), "utf-8");
   }
 }

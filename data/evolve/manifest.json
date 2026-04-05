@@ -1,0 +1,12 @@
+{
+  "best_version": "002",
+  "history": [
+    {
+      "version": "001",
+      "avg_score": 0.23,
+      "accepted": true,
+      "timestamp": "2026-04-03T22:09:00Z",
+      "prompt_tokens": 517
+    }
+  ]
+}
