@@ -15,7 +15,7 @@ const BITGN_API_KEY = process.env.BITGN_API_KEY ?? "";
 const BENCHMARK_HOST =
   process.env.BENCHMARK_HOST ?? "https://api.bitgn.com";
 const BENCHMARK_ID = process.env.BENCHMARK_ID ?? "bitgn/pac1-dev";
-const MODEL_ID = process.env.MODEL_ID ?? "qwen3:32b";
+const MODEL_ID = process.env.MODEL_ID ?? "qwen3:14b";
 const HINT = process.env.HINT;
 const PROMPT_VERSION = process.env.PROMPT_VERSION ?? getLatestVersion();
 
