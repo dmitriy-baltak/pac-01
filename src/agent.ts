@@ -7,7 +7,7 @@ import { createRuntimeClient, type RuntimeClient } from "./runtime.js";
 import { NextStep, type ToolAction } from "./schemas.js";
 import { formatResult } from "./format.js";
 import { buildSystemPrompt } from "./prompt.js";
-import { callClaude, type ClaudeResponse } from "./claude.js";
+import { callLLM, type LLMResponse, type ChatMessage } from "./llm.js";
 import type { TraceCollector } from "./trace.js";
 
 const MAX_STEPS = 30;
@@ -79,11 +79,36 @@ async function dispatch(
   }
 }
 
-function buildPrompt(history: { role: string; content: string }[]): string {
-  return history.map((m) => {
-    const prefix = m.role === "assistant" ? "ASSISTANT" : "USER";
-    return `[${prefix}]\n${m.content}`;
-  }).join("\n\n");
+function buildCompletedActionsSummary(
+  history: { role: string; content: string }[],
+): string {
+  const actions: string[] = [];
+  for (let i = 0; i < history.length; i++) {
+    if (history[i].role !== "assistant") continue;
+    try {
+      const parsed = JSON.parse(history[i].content);
+      const action = parsed.action;
+      if (!action?.tool) continue;
+      const resultMsg = i + 1 < history.length && history[i + 1].role === "user"
+        ? history[i + 1].content.slice(0, 80)
+        : "no result";
+      const param = action.tool === "read" || action.tool === "list" || action.tool === "delete"
+        ? action.path
+        : action.tool === "write"
+          ? action.path
+          : action.tool === "move"
+            ? `${action.from} -> ${action.to}`
+            : action.tool === "find"
+              ? `name=${action.name}`
+              : action.tool === "search"
+                ? `pattern=${action.pattern}`
+                : "";
+      actions.push(`${actions.length + 1}. ${action.tool} ${param} -> ${resultMsg}`);
+    } catch {
+      // Skip unparseable assistant messages
+    }
+  }
+  return actions.length > 0 ? actions.join("\n") : "(none yet)";
 }
 
 export interface AgentOptions {
@@ -131,13 +156,21 @@ export async function runAgent(
   });
 
   // Agent loop
+  let consecutiveParseErrors = 0;
+
   for (let step = 0; step < MAX_STEPS; step++) {
     const started = Date.now();
-    const prompt = buildPrompt(history);
+    const messages: ChatMessage[] = [
+      { role: "system", content: systemPrompt },
+      ...history.map((m) => ({
+        role: m.role as "user" | "assistant",
+        content: m.content,
+      })),
+    ];
 
-    let response: ClaudeResponse;
+    let response: LLMResponse;
     try {
-      response = await callClaude(model, systemPrompt, prompt);
+      response = await callLLM(model, messages, { format: "json" });
     } catch (err) {
       console.log(`\x1b[31mERR\x1b[0m: LLM call failed: ${err}`);
       if (opts?.trace) opts.trace.setError(`LLM call failed: ${err}`);
@@ -153,8 +186,14 @@ export async function runAgent(
       if (fenceMatch) text = fenceMatch[1];
       raw = JSON.parse(text.trim());
     } catch {
+      consecutiveParseErrors++;
+      const _raw = response.result ?? "";
+      const _hasFence = /```/.test(_raw);
       console.log(
-        `\x1b[31mERR\x1b[0m: Failed to parse JSON (step ${step + 1}): ${(response.result ?? "").slice(0, 200)}`,
+        `\x1b[31mERR\x1b[0m: Failed to parse JSON (step ${step + 1}, attempt ${consecutiveParseErrors}):` +
+        `\n  stop_reason=${response.stop_reason} | length=${_raw.length} | has_fence=${_hasFence}` +
+        `\n  first300=${_raw.slice(0, 300)}` +
+        `\n  last200=${_raw.slice(-200)}`,
       );
       if (opts?.trace) {
         opts.trace.addStep({
@@ -163,13 +202,32 @@ export async function runAgent(
           parse_error: "Response was not valid JSON",
         });
       }
-      history.push({ role: "assistant", content: response.result ?? "" });
+
+      // Bail after 3 consecutive parse failures
+      if (consecutiveParseErrors >= 3) {
+        console.log(`\x1b[31mERR\x1b[0m: ${consecutiveParseErrors} consecutive parse errors, forcing answer`);
+        if (opts?.trace) opts.trace.setError("Too many consecutive parse errors");
+        await vm.answer({
+          message: "Agent encountered repeated JSON parse errors.",
+          outcome: Outcome.ERR_INTERNAL,
+          refs: [],
+        });
+        return;
+      }
+
+      // Do NOT add the broken response to history — the model would see
+      // its own truncated action and think it already ran.
+      const completedSummary = buildCompletedActionsSummary(history);
+      const wasTruncated = response.stop_reason === "max_tokens";
+      const causeText = wasTruncated ? "truncated (hit output limit)" : "not valid JSON";
+
       history.push({
         role: "user",
-        content: "Error: your response was not valid JSON. Respond with ONLY a JSON object, no markdown or explanation.",
+        content: `Error: your previous response was ${causeText}. No action was executed from it.\n\nActions completed so far:\n${completedSummary}\n\nRespond with ONLY a valid JSON object. Keep current_state and plan_remaining_steps_brief very brief to avoid truncation.`,
       });
       continue;
     }
+
     // Handle null action when model thinks task is complete
     if (raw && typeof raw === "object" && (raw as Record<string, unknown>).action == null && (raw as Record<string, unknown>).task_completed === true) {
       (raw as Record<string, unknown>).action = {
@@ -182,8 +240,9 @@ export async function runAgent(
 
     const parsed = NextStep.safeParse(raw);
     if (!parsed.success) {
+      consecutiveParseErrors++;
       console.log(
-        `\x1b[31mERR\x1b[0m: Zod validation failed (step ${step + 1}): ${parsed.error.message}`,
+        `\x1b[31mERR\x1b[0m: Zod validation failed (step ${step + 1}, attempt ${consecutiveParseErrors}): ${parsed.error.message}`,
       );
       if (opts?.trace) {
         opts.trace.addStep({
@@ -192,13 +251,27 @@ export async function runAgent(
           parse_error: `Zod: ${parsed.error.message}`,
         });
       }
-      history.push({ role: "assistant", content: JSON.stringify(raw) });
+
+      if (consecutiveParseErrors >= 3) {
+        console.log(`\x1b[31mERR\x1b[0m: ${consecutiveParseErrors} consecutive parse errors, forcing answer`);
+        if (opts?.trace) opts.trace.setError("Too many consecutive parse errors");
+        await vm.answer({
+          message: "Agent encountered repeated schema validation errors.",
+          outcome: Outcome.ERR_INTERNAL,
+          refs: [],
+        });
+        return;
+      }
+
+      const completedSummary = buildCompletedActionsSummary(history);
       history.push({
         role: "user",
-        content: "Error: your response didn't match the required schema. Please try again.",
+        content: `Error: your response didn't match the required schema. No action was executed.\n\nActions completed so far:\n${completedSummary}\n\nRespond with ONLY a valid JSON object matching the schema.`,
       });
       continue;
     }
+
+    consecutiveParseErrors = 0;
 
     const job = parsed.data;
     const planPreview = job.plan_remaining_steps_brief[0] ?? "";

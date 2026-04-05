@@ -1,0 +1,33 @@
+{
+  "task_id": "t08",
+  "prompt_version": "002",
+  "model": "claude-haiku-4-5-20251001",
+  "instruction": "Create captur",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "parse_error",
+      "params": {},
+      "result_preview": "",
+      "elapsed_ms": 5265,
+      "parse_error": "Response was not valid JSON"
+    },
+    {
+      "step": 2,
+      "tool": "answer",
+      "params": {
+        "message": "Your task message was cut off at 'Create captur'. Please provide the complete task — what should I create or do?",
+        "outcome": "none_clarification",
+        "refs": []
+      },
+      "result_preview": "",
+      "elapsed_ms": 52
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 9468,
+  "total_steps": 2,
+  "outcome": "none_clarification",
+  "answer_message": "Your task message was cut off at 'Create captur'. Please provide the complete task — what should I create or do?",
+  "score": 1
+}

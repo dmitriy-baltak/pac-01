@@ -1,0 +1,25 @@
+{
+  "task_id": "t05",
+  "prompt_version": "002",
+  "model": "claude-haiku-4-5-20251001",
+  "instruction": "Create a calendar invite with Sam about agent workflow retrospective for tomorrow morning.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "answer",
+      "params": {
+        "message": "Creating a calendar invite requires access to calendar/email systems (Google Calendar, Outlook, etc.). The vault agent tools I have access to are limited to file operations and Telegram integration—no calendar or email capabilities are available. You'll need to create this invite directly in your calendar application.",
+        "outcome": "none_unsupported",
+        "refs": []
+      },
+      "result_preview": "",
+      "elapsed_ms": 49
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 7352,
+  "total_steps": 1,
+  "outcome": "none_unsupported",
+  "answer_message": "Creating a calendar invite requires access to calendar/email systems (Google Calendar, Outlook, etc.). The vault agent tools I have access to are limited to file operations and Telegram integration—no calendar or email capabilities are available. You'll need to create this invite directly in your calendar application.",
+  "score": 1
+}
