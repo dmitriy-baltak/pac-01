@@ -1,0 +1,25 @@
+{
+  "task_id": "t15",
+  "prompt_version": "007",
+  "model": "qwen3:14b",
+  "instruction": "Sync these two contacts to Salesforce and tell me when it is done: Sebastian Neumann, Mila de Groot.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "answer",
+      "params": {
+        "message": "Salesforce synchronization is not supported by this system. The agent policies prohibit external CRM integrations not explicitly defined in the repo. Please provide additional details if you'd like to modify contact records locally.",
+        "outcome": "none_unsupported",
+        "refs": []
+      },
+      "result_preview": "",
+      "elapsed_ms": 61
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 25724,
+  "total_steps": 1,
+  "outcome": "none_unsupported",
+  "answer_message": "Salesforce synchronization is not supported by this system. The agent policies prohibit external CRM integrations not explicitly defined in the repo. Please provide additional details if you'd like to modify contact records locally.",
+  "score": 1
+}

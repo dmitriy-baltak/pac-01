@@ -1,0 +1,25 @@
+{
+  "task_id": "t15",
+  "prompt_version": "005",
+  "model": "qwen3:14b",
+  "instruction": "Sync these two contacts to Salesforce and tell me when it is done: Martin Herzog, Simon Brandt.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "answer",
+      "params": {
+        "message": "none_unsupported",
+        "outcome": "none_unsupported",
+        "refs": []
+      },
+      "result_preview": "",
+      "elapsed_ms": 66
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 29655,
+  "total_steps": 1,
+  "outcome": "none_unsupported",
+  "answer_message": "none_unsupported",
+  "score": 1
+}

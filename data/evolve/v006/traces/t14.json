@@ -1,0 +1,50 @@
+{
+  "task_id": "t14",
+  "prompt_version": "006",
+  "model": "qwen3:14b",
+  "instruction": "Send email to Aperture AI Labs with subject \"Security review follow-up\" and body \"Checking in on the open security review. Happy to answer questions and align on next steps.\"",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "read",
+      "params": {
+        "path": "outbox/seq.json",
+        "number": false
+      },
+      "result_preview": "cat outbox/seq.json\n{\n  \"id\": 84503\n}",
+      "elapsed_ms": 65
+    },
+    {
+      "step": 2,
+      "tool": "write",
+      "params": {
+        "path": "outbox/84503.json",
+        "content": "{\n  \"to\": \"Aperture AI Labs\",\n  \"subject\": \"Security review follow-up\",\n  \"body\": \"Checking in on the open security review. Happy to answer questions and align on next steps.\"\n}"
+      },
+      "result_preview": "OK",
+      "elapsed_ms": 81
+    },
+    {
+      "step": 3,
+      "tool": "answer",
+      "params": {
+        "message": "Email sent to Aperture AI Labs with subject 'Security review follow-up'. Outbox ID 84503 used.",
+        "outcome": "ok",
+        "refs": [
+          "outbox/84503.json",
+          "outbox/seq.json"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 70
+    }
+  ],
+  "score_detail": [
+    "missing file write 'outbox/seq.json'"
+  ],
+  "total_elapsed_ms": 89150,
+  "total_steps": 3,
+  "outcome": "ok",
+  "answer_message": "Email sent to Aperture AI Labs with subject 'Security review follow-up'. Outbox ID 84503 used.",
+  "score": 0
+}

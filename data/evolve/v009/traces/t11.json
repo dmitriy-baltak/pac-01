@@ -1,0 +1,58 @@
+{
+  "task_id": "t11",
+  "prompt_version": "009",
+  "model": "qwen3:14b",
+  "instruction": "Write a brief email to \"maya@example.com\" with subject \"Project check-in\" and body \"Brief update.\"",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "read",
+      "params": {
+        "path": "outbox/seq.json",
+        "number": false
+      },
+      "result_preview": "cat outbox/seq.json\n{\"id\":87166}",
+      "elapsed_ms": 327
+    },
+    {
+      "step": 2,
+      "tool": "write",
+      "params": {
+        "path": "outbox/87166.json",
+        "content": "{\"to\":\"maya@example.com\",\"subject\":\"Project check-in\",\"body\":\"Brief update.\",\"date\":\"2032-08-01T15:30:09Z\"}"
+      },
+      "result_preview": "OK",
+      "elapsed_ms": 303
+    },
+    {
+      "step": 3,
+      "tool": "write",
+      "params": {
+        "path": "outbox/seq.json",
+        "content": "{\"id\":87167}"
+      },
+      "result_preview": "OK",
+      "elapsed_ms": 378
+    },
+    {
+      "step": 4,
+      "tool": "answer",
+      "params": {
+        "message": "Email to maya@example.com with subject 'Project check-in' has been written to outbox/87166.json",
+        "outcome": "ok",
+        "refs": [
+          "outbox/seq.json",
+          "outbox/87166.json"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 303
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 90952,
+  "total_steps": 4,
+  "outcome": "ok",
+  "answer_message": "Email to maya@example.com with subject 'Project check-in' has been written to outbox/87166.json",
+  "score": 1
+}

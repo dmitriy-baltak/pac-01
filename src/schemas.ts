@@ -105,7 +105,7 @@ export const NextStepJsonSchema = JSON.stringify(z.toJSONSchema(NextStep));
  * Flat JSON Schema for --json-schema (no anyOf/oneOf — all tool params optional).
  * After SO decoding, we restructure into nested action + validate with Zod.
  */
-export const NextStepSoSchema = JSON.stringify({
+export const NextStepSoSchemaObj = {
   type: "object",
   properties: {
     current_state: { type: "string" },
@@ -144,4 +144,6 @@ export const NextStepSoSchema = JSON.stringify({
   },
   required: ["current_state", "plan_remaining_steps_brief", "task_completed", "action"],
   additionalProperties: false,
-});
+} as const;
+
+export const NextStepSoSchema = JSON.stringify(NextStepSoSchemaObj);

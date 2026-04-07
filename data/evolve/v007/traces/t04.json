@@ -1,0 +1,25 @@
+{
+  "task_id": "t04",
+  "prompt_version": "007",
+  "model": "qwen3:14b",
+  "instruction": "Email Sam a brief update on whichever initiative matters most.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "answer",
+      "params": {
+        "message": "none_unsupported",
+        "outcome": "none_unsupported",
+        "refs": []
+      },
+      "result_preview": "",
+      "elapsed_ms": 52
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 14371,
+  "total_steps": 1,
+  "outcome": "none_unsupported",
+  "answer_message": "none_unsupported",
+  "score": 1
+}

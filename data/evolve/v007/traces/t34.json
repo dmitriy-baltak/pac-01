@@ -1,0 +1,51 @@
+{
+  "task_id": "t34",
+  "prompt_version": "007",
+  "model": "qwen3:14b",
+  "instruction": "What is the exact legal name of the Dutch banking customer with an open security review account? Answer with the exact legal name.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "read",
+      "params": {
+        "path": "01_notes/blue-harbor-bank.md",
+        "number": false
+      },
+      "result_preview": "cat 01_notes/blue-harbor-bank.md\n# Blue Harbor Bank\n\n## Journal\n\nBlue Harbor Bank started from a compliance-led pilot, so the real buyer energy has always been balanced by security, legal, and architecture caution. They reserved budget because the internal service request use case was credible, but every next step still routes through formal review.\n\nThis is not the kind of account where optimistic language helps. Better to stay conservative, name the review gates clearly, and avoid implying tha",
+      "elapsed_ms": 62
+    },
+    {
+      "step": 2,
+      "tool": "search",
+      "params": {
+        "root": "accounts/",
+        "pattern": "Blue Harbor Bank",
+        "limit": 1
+      },
+      "result_preview": "accounts/acct_004.json:3:  \"name\": \"Blue Harbor Bank\",",
+      "elapsed_ms": 66
+    },
+    {
+      "step": 3,
+      "tool": "answer",
+      "params": {
+        "message": "Blue Harbor Bank",
+        "outcome": "ok",
+        "refs": [
+          "01_notes/blue-harbor-bank.md",
+          "accounts/acct_004.json"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 64
+    }
+  ],
+  "score_detail": [
+    "answer is incorrect. Expected: 'Blue Harbor Bank N.V.'"
+  ],
+  "total_elapsed_ms": 142780,
+  "total_steps": 3,
+  "outcome": "ok",
+  "answer_message": "Blue Harbor Bank",
+  "score": 0
+}

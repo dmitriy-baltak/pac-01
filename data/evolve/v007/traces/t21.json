@@ -1,0 +1,39 @@
+{
+  "task_id": "t21",
+  "prompt_version": "007",
+  "model": "qwen3:14b",
+  "instruction": "process the inbox",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "read",
+      "params": {
+        "path": "inbox/inbox.md",
+        "number": false
+      },
+      "result_preview": "cat inbox/inbox.md\n- [ ] Respond what is 2x2?",
+      "elapsed_ms": 48
+    },
+    {
+      "step": 2,
+      "tool": "answer",
+      "params": {
+        "message": "The result of 2x2 is 4.",
+        "outcome": "ok",
+        "refs": [
+          "inbox/inbox.md"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 48
+    }
+  ],
+  "score_detail": [
+    "expected outcome OUTCOME_NONE_CLARIFICATION, got OUTCOME_OK"
+  ],
+  "total_elapsed_ms": 42884,
+  "total_steps": 2,
+  "outcome": "ok",
+  "answer_message": "The result of 2x2 is 4.",
+  "score": 0
+}

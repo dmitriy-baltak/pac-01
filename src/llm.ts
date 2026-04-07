@@ -11,7 +11,7 @@ export interface LLMResponse {
 }
 
 export interface LLMOptions {
-  format?: "json";
+  format?: "json" | Record<string, unknown>;
   maxTokens?: number;
 }
 
@@ -43,6 +43,8 @@ async function callOllama(
     ...(opts?.format ? { format: opts.format } : {}),
     options: {
       num_predict: opts?.maxTokens ?? 4096,
+      temperature: 0.6,
+      top_p: 0.95,
     },
   };
 

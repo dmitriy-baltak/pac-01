@@ -1,0 +1,41 @@
+{
+  "task_id": "t12",
+  "prompt_version": "006",
+  "model": "qwen3:14b",
+  "instruction": "Send short follow-up email to Alex Meyer about next steps on the expansion. Keep the diff focused.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "parse_error",
+      "params": {},
+      "result_preview": "",
+      "elapsed_ms": 43371,
+      "parse_error": "Zod: [\n  {\n    \"code\": \"invalid_value\",\n    \"values\": [\n      \"all\",\n      \"files\",\n      \"dirs\"\n    ],\n    \"path\": [\n      \"action\",\n      \"type\"\n    ],\n    \"message\": \"Invalid option: expected one of \\\"all\\\"|\\\"files\\\"|\\\"dirs\\\"\"\n  }\n]"
+    },
+    {
+      "step": 2,
+      "tool": "parse_error",
+      "params": {},
+      "result_preview": "",
+      "elapsed_ms": 26377,
+      "parse_error": "Zod: [\n  {\n    \"code\": \"invalid_value\",\n    \"values\": [\n      \"all\",\n      \"files\",\n      \"dirs\"\n    ],\n    \"path\": [\n      \"action\",\n      \"type\"\n    ],\n    \"message\": \"Invalid option: expected one of \\\"all\\\"|\\\"files\\\"|\\\"dirs\\\"\"\n  }\n]"
+    },
+    {
+      "step": 3,
+      "tool": "answer",
+      "params": {
+        "message": "none_clarification",
+        "outcome": "none_clarification",
+        "refs": []
+      },
+      "result_preview": "",
+      "elapsed_ms": 71
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 132044,
+  "total_steps": 3,
+  "outcome": "none_clarification",
+  "answer_message": "none_clarification",
+  "score": 1
+}

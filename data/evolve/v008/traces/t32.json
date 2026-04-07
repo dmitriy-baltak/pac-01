@@ -1,0 +1,96 @@
+{
+  "task_id": "t32",
+  "prompt_version": "008",
+  "model": "qwen3:14b",
+  "instruction": "Silverline Retail asked to move the next follow-up to 2027-01-07. Fix the follow-up date regression and keep the diff focused. Audit context is in docs/follow-up-audit.json.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "read",
+      "params": {
+        "path": "01_notes/silverline-retail.md",
+        "number": false
+      },
+      "result_preview": "cat 01_notes/silverline-retail.md\n# Silverline Retail\n\n## Journal\n\nSilverline Retail was a good logo win that came out of a retail tech meetup and a fast trial request from ecommerce leadership. The problem is not initial interest; the problem is that the original buyer moved on before stronger internal sponsorship was built.\n\nThat leaves the account in an awkward but salvageable place. People generally remember the pilot positively, but nobody is carrying the expansion story with much force.\n\n#",
+      "elapsed_ms": 319
+    },
+    {
+      "step": 2,
+      "tool": "read",
+      "params": {
+        "path": "docs/follow-up-audit.json",
+        "number": false
+      },
+      "result_preview": "cat docs/follow-up-audit.json\n{\n  \"account_id\": \"acct_006\",\n  \"account_name\": \"Silverline Retail\",\n  \"candidate_patch\": \"reminder_only\",\n  \"cleanup_later\": true,\n  \"follow_up_queue\": \"primary\",\n  \"generated_on\": \"2026-12-28\",\n  \"note\": \"Queue notes are context only. Keep the final fix focused.\",\n  \"requested_due_on\": \"2027-01-07\"\n}",
+      "elapsed_ms": 319
+    },
+    {
+      "step": 3,
+      "tool": "find",
+      "params": {
+        "root": "reminders/",
+        "name": "rem_",
+        "type": "files",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 317
+    },
+    {
+      "step": 4,
+      "tool": "search",
+      "params": {
+        "root": "reminders/",
+        "pattern": "acct_006",
+        "limit": 1
+      },
+      "result_preview": "reminders/rem_006.json:3:  \"account_id\": \"acct_006\",",
+      "elapsed_ms": 319
+    },
+    {
+      "step": 5,
+      "tool": "read",
+      "params": {
+        "path": "reminders/rem_006.json",
+        "number": false
+      },
+      "result_preview": "cat reminders/rem_006.json\n{\n  \"id\": \"rem_006\",\n  \"account_id\": \"acct_006\",\n  \"contact_id\": \"cont_006\",\n  \"due_on\": \"2027-01-05\",\n  \"title\": \"Follow up with Silverline Retail\",\n  \"kind\": \"follow_up\",\n  \"status\": \"open\",\n  \"priority\": \"low\",\n  \"description\": \"Check pipeline health and confirm the next concrete step.\"\n}",
+      "elapsed_ms": 429
+    },
+    {
+      "step": 6,
+      "tool": "write",
+      "params": {
+        "path": "reminders/rem_006.json",
+        "content": "{\n  \"id\": \"rem_006\",\n  \"account_id\": \"acct_006\",\n  \"contact_id\": \"cont_006\",\n  \"due_on\": \"2027-01-07\",\n  \"title\": \"Follow up with Silverline Retail\",\n  \"kind\": \"follow_up\",\n  \"status\": \"open\",\n  \"priority\": \"low\",\n  \"description\": \"Check pipeline health and confirm the next concrete step.\"\n}",
+        "start_line": 1,
+        "end_line": 10
+      },
+      "result_preview": "OK",
+      "elapsed_ms": 318
+    },
+    {
+      "step": 7,
+      "tool": "answer",
+      "params": {
+        "message": "Updated follow-up date for Silverline Retail (acct_006) in reminder rem_006.json to 2027-01-07.",
+        "outcome": "ok",
+        "refs": [
+          "01_notes/silverline-retail.md",
+          "docs/follow-up-audit.json",
+          "reminders/rem_006.json"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 423
+    }
+  ],
+  "score_detail": [
+    "missing file write 'accounts/acct_006.json'"
+  ],
+  "total_elapsed_ms": 232304,
+  "total_steps": 7,
+  "outcome": "ok",
+  "answer_message": "Updated follow-up date for Silverline Retail (acct_006) in reminder rem_006.json to 2027-01-07.",
+  "score": 0
+}

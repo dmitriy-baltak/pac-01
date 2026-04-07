@@ -1,0 +1,39 @@
+{
+  "task_id": "t10",
+  "prompt_version": "006",
+  "model": "qwen3:14b",
+  "instruction": "Create invoice SR-13 with 2 lines: 'OpenAI Subscription' - 20, 'Claude Subscription' - 20",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "write",
+      "params": {
+        "path": "my-invoices/SR-13.json",
+        "content": "{\n  \"invoice_number\": \"SR-13\",\n  \"date\": \"2032-08-01\",\n  \"lines\": [\n    {\n      \"description\": \"OpenAI Subscription\",\n      \"amount\": 20\n    },\n    {\n      \"description\": \"Claude Subscription\",\n      \"amount\": 20\n    }\n  ],\n  \"total\": 40\n}"
+      },
+      "result_preview": "OK",
+      "elapsed_ms": 56
+    },
+    {
+      "step": 2,
+      "tool": "answer",
+      "params": {
+        "message": "Invoice SR-13 with two line items has been created in the my-invoices directory.",
+        "outcome": "ok",
+        "refs": [
+          "my-invoices/SR-13.json"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 56
+    }
+  ],
+  "score_detail": [
+    "JSON mismatch in 'my-invoices/SR-13.json': lines[0].name: expected \"OpenAI Subscription\" got <unset>"
+  ],
+  "total_elapsed_ms": 43169,
+  "total_steps": 2,
+  "outcome": "ok",
+  "answer_message": "Invoice SR-13 with two line items has been created in the my-invoices directory.",
+  "score": 0
+}

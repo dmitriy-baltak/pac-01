@@ -1,0 +1,73 @@
+{
+  "task_id": "t32",
+  "prompt_version": "011",
+  "model": "qwen3:14b",
+  "instruction": "CanalPort Shipping asked to move the next follow-up to 2026-08-14. Fix the follow-up date regression and keep the diff focused. Audit context is in docs/follow-up-audit.json.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "read",
+      "params": {
+        "path": "docs/follow-up-audit.json",
+        "number": false
+      },
+      "result_preview": "cat docs/follow-up-audit.json\n{\n  \"account_id\": \"acct_007\",\n  \"account_name\": \"CanalPort Shipping\",\n  \"candidate_patch\": \"reminder_only\",\n  \"cleanup_later\": true,\n  \"follow_up_queue\": \"primary\",\n  \"generated_on\": \"2026-08-04\",\n  \"note\": \"Queue notes are context only. Keep the final fix focused.\",\n  \"requested_due_on\": \"2026-08-14\"\n}",
+      "elapsed_ms": 308
+    },
+    {
+      "step": 2,
+      "tool": "read",
+      "params": {
+        "path": "accounts/acct_007.json",
+        "number": false
+      },
+      "result_preview": "cat accounts/acct_007.json\n{\n  \"id\": \"acct_007\",\n  \"name\": \"CanalPort Shipping\",\n  \"legal_name\": \"CanalPort Shipping B.V.\",\n  \"industry\": \"logistics\",\n  \"region\": \"Benelux\",\n  \"country\": \"Netherlands\",\n  \"tier\": \"core\",\n  \"status\": \"active\",\n  \"primary_contact_id\": \"cont_007\",\n  \"account_manager\": \"Hannah Hartmann\",\n  \"last_contacted_on\": \"2026-07-04\",\n  \"next_follow_up_on\": \"2026-08-09\",\n  \"notes\": \"Procured through a referral from a port operations consultant who knew the team was drowning in ",
+      "elapsed_ms": 306
+    },
+    {
+      "step": 3,
+      "tool": "find",
+      "params": {
+        "root": "reminders/",
+        "name": "CanalPort Shipping",
+        "type": "all",
+        "limit": 5
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 312
+    },
+    {
+      "step": 4,
+      "tool": "write",
+      "params": {
+        "path": "accounts/acct_007.json",
+        "content": "{\n  \"id\": \"acct_007\",\n  \"name\": \"CanalPort Shipping\",\n  \"legal_name\": \"CanalPort Shipping B.V.\",\n  \"industry\": \"logistics\",\n  \"region\": \"Benelux\",\n  \"country\": \"Netherlands\",\n  \"tier\": \"core\",\n  \"status\": \"active\",\n  \"primary_contact_id\": \"cont_007\",\n  \"account_manager\": \"Hannah Hartmann\",\n  \"last_contacted_on\": \"2026-07-04\",\n  \"next_follow_up_on\": \"2026-08-14\",\n  \"notes\": \"Procured through a referral from a port operations consultant who knew the team was drowning in manual exception tracking across vessel schedules, customs paperwork, and customer updates. John won the deal by mapping one messy dispatch workflow into a narrower phased rollout that felt operationally safe to the buyer. The pain is real, but urgency is only medium because they keep absorbing delays with overtime. Related note file: 01_notes/canalport-shipping.md\"\n}",
+        "start_line": 12,
+        "end_line": 12
+      },
+      "result_preview": "OK",
+      "elapsed_ms": 307
+    },
+    {
+      "step": 5,
+      "tool": "answer",
+      "params": {
+        "message": "Fixed CanalPort Shipping's follow-up date regression by updating accounts/acct_007.json to 2026-08-14. No reminders found for this account.",
+        "outcome": "ok",
+        "refs": [
+          "accounts/acct_007.json"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 309
+    }
+  ],
+  "score_detail": [
+    "missing file write 'reminders/rem_007.json'"
+  ],
+  "total_elapsed_ms": 175671,
+  "total_steps": 5,
+  "outcome": "ok",
+  "answer_message": "Fixed CanalPort Shipping's follow-up date regression by updating accounts/acct_007.json to 2026-08-14. No reminders found for this account.",
+  "score": 0
+}

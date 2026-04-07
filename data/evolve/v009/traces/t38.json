@@ -1,0 +1,59 @@
+{
+  "task_id": "t38",
+  "prompt_version": "009",
+  "model": "qwen3:14b",
+  "instruction": "What is the email of the primary contact for the German AI-insights add-on subscriber Aperture account? Return only the email.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "search",
+      "params": {
+        "root": "accounts/",
+        "pattern": "Aperture",
+        "limit": 1
+      },
+      "result_preview": "accounts/acct_009.json:3:  \"name\": \"Aperture AI Labs\",",
+      "elapsed_ms": 309
+    },
+    {
+      "step": 2,
+      "tool": "read",
+      "params": {
+        "path": "accounts/acct_009.json",
+        "number": false
+      },
+      "result_preview": "cat accounts/acct_009.json\n{\n  \"id\": \"acct_009\",\n  \"name\": \"Aperture AI Labs\",\n  \"legal_name\": \"Aperture AI Labs GmbH\",\n  \"industry\": \"software\",\n  \"region\": \"DACH\",\n  \"country\": \"Germany\",\n  \"tier\": \"growth\",\n  \"status\": \"active\",\n  \"primary_contact_id\": \"cont_009\",\n  \"account_manager\": \"Leonie Arnold\",\n  \"last_contacted_on\": \"2026-02-06\",\n  \"next_follow_up_on\": \"2026-02-08\",\n  \"notes\": \"Procured when their product analytics lead asked for the AI insights add-on after a prior core workflow roll",
+      "elapsed_ms": 313
+    },
+    {
+      "step": 3,
+      "tool": "read",
+      "params": {
+        "path": "contacts/cont_009.json",
+        "number": false
+      },
+      "result_preview": "cat contacts/cont_009.json\n{\n  \"id\": \"cont_009\",\n  \"account_id\": \"acct_009\",\n  \"full_name\": \"Isa Meijer\",\n  \"role\": \"Product Manager\",\n  \"email\": \"isa.meijer@aperture-ai-labs.example.com\",\n  \"preferred_tone\": \"warm\",\n  \"last_seen_on\": \"2026-01-07\"\n}",
+      "elapsed_ms": 311
+    },
+    {
+      "step": 4,
+      "tool": "answer",
+      "params": {
+        "message": "isa.meijer@aperture-ai-labs.example.com",
+        "outcome": "ok",
+        "refs": [
+          "accounts/acct_009.json",
+          "contacts/cont_009.json"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 307
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 117067,
+  "total_steps": 4,
+  "outcome": "ok",
+  "answer_message": "isa.meijer@aperture-ai-labs.example.com",
+  "score": 1
+}

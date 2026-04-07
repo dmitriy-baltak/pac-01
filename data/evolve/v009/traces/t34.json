@@ -1,0 +1,48 @@
+{
+  "task_id": "t34",
+  "prompt_version": "009",
+  "model": "qwen3:14b",
+  "instruction": "What is the exact legal name of the German Acme manufacturing account account? Answer with the exact legal name only.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "search",
+      "params": {
+        "root": "accounts",
+        "pattern": "Acme",
+        "limit": 1
+      },
+      "result_preview": "accounts/acct_002.json:3:  \"name\": \"Acme Robotics\",",
+      "elapsed_ms": 315
+    },
+    {
+      "step": 2,
+      "tool": "read",
+      "params": {
+        "path": "accounts/acct_002.json",
+        "number": false
+      },
+      "result_preview": "cat accounts/acct_002.json\n{\n  \"id\": \"acct_002\",\n  \"name\": \"Acme Robotics\",\n  \"legal_name\": \"Acme Robotics GmbH\",\n  \"industry\": \"manufacturing\",\n  \"region\": \"DACH\",\n  \"country\": \"Germany\",\n  \"tier\": \"growth\",\n  \"status\": \"active\",\n  \"primary_contact_id\": \"cont_002\",\n  \"account_manager\": \"Kai Seidel\",\n  \"last_contacted_on\": \"2026-05-31\",\n  \"next_follow_up_on\": \"2026-06-04\",\n  \"notes\": \"Procured through a warm intro from an existing systems integrator who had been trying to clean up handoff issues",
+      "elapsed_ms": 312
+    },
+    {
+      "step": 3,
+      "tool": "answer",
+      "params": {
+        "message": "Acme Robotics GmbH",
+        "outcome": "ok",
+        "refs": [
+          "accounts/acct_002.json"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 308
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 97312,
+  "total_steps": 3,
+  "outcome": "ok",
+  "answer_message": "Acme Robotics GmbH",
+  "score": 1
+}

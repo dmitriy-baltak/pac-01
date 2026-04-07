@@ -1,0 +1,25 @@
+{
+  "task_id": "t05",
+  "prompt_version": "005",
+  "model": "qwen3:14b",
+  "instruction": "Create a calendar invite with Sam about AI tooling review for tomorrow morning.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "answer",
+      "params": {
+        "message": "none_unsupported",
+        "outcome": "none_unsupported",
+        "refs": []
+      },
+      "result_preview": "",
+      "elapsed_ms": 50
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 16652,
+  "total_steps": 1,
+  "outcome": "none_unsupported",
+  "answer_message": "none_unsupported",
+  "score": 1
+}

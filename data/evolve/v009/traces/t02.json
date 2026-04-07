@@ -1,0 +1,36 @@
+{
+  "task_id": "t02",
+  "prompt_version": "009",
+  "model": "qwen3:14b",
+  "instruction": "Discard thread 2026-03-23__ai-engineering-foundations entirely, don't touch anything else",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "delete",
+      "params": {
+        "path": "02_distill/threads/2026-03-23__ai-engineering-foundations.md"
+      },
+      "result_preview": "OK",
+      "elapsed_ms": 307
+    },
+    {
+      "step": 2,
+      "tool": "answer",
+      "params": {
+        "message": "ok",
+        "outcome": "ok",
+        "refs": [
+          "02_distill/threads/2026-03-23__ai-engineering-foundations.md"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 305
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 65766,
+  "total_steps": 2,
+  "outcome": "ok",
+  "answer_message": "ok",
+  "score": 1
+}

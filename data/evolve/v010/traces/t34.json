@@ -1,0 +1,39 @@
+{
+  "task_id": "t34",
+  "prompt_version": "010",
+  "model": "qwen3:14b",
+  "instruction": "What is the exact legal name of the Utility account GreenGrid in the DACH region account? Answer with the exact legal name only.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "parse_error",
+      "params": {},
+      "result_preview": "",
+      "elapsed_ms": 24786,
+      "parse_error": "Zod: [\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"current_state\"\n    ],\n    \"message\": \"Invalid input: expected string, received undefined\"\n  },\n  {\n    \"expected\": \"array\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"plan_remaining_steps_brief\"\n    ],\n    \"message\": \"Invalid input: expected array, received undefined\"\n  },\n  {\n    \"expected\": \"boolean\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"task_completed\"\n    ],\n    \"message\": \"Invalid input: expected boolean, received undefined\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"object\",\n    \"path\": [\n      \"action\"\n    ],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  }\n]"
+    },
+    {
+      "step": 2,
+      "tool": "parse_error",
+      "params": {},
+      "result_preview": "",
+      "elapsed_ms": 13613,
+      "parse_error": "Zod: [\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"current_state\"\n    ],\n    \"message\": \"Invalid input: expected string, received undefined\"\n  },\n  {\n    \"expected\": \"array\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"plan_remaining_steps_brief\"\n    ],\n    \"message\": \"Invalid input: expected array, received undefined\"\n  },\n  {\n    \"expected\": \"boolean\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"task_completed\"\n    ],\n    \"message\": \"Invalid input: expected boolean, received undefined\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"object\",\n    \"path\": [\n      \"action\"\n    ],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  }\n]"
+    },
+    {
+      "step": 3,
+      "tool": "parse_error",
+      "params": {},
+      "result_preview": "",
+      "elapsed_ms": 17847,
+      "parse_error": "Zod: [\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"current_state\"\n    ],\n    \"message\": \"Invalid input: expected string, received undefined\"\n  },\n  {\n    \"expected\": \"array\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"plan_remaining_steps_brief\"\n    ],\n    \"message\": \"Invalid input: expected array, received undefined\"\n  },\n  {\n    \"expected\": \"boolean\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"task_completed\"\n    ],\n    \"message\": \"Invalid input: expected boolean, received undefined\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"object\",\n    \"path\": [\n      \"action\"\n    ],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  }\n]"
+    }
+  ],
+  "score_detail": [
+    "expected outcome OUTCOME_OK, got OUTCOME_ERR_INTERNAL"
+  ],
+  "total_elapsed_ms": 57763,
+  "total_steps": 3,
+  "error": "Too many consecutive parse errors",
+  "score": 0
+}

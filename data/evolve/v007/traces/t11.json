@@ -1,0 +1,41 @@
+{
+  "task_id": "t11",
+  "prompt_version": "007",
+  "model": "qwen3:14b",
+  "instruction": "Write a brief email to \"sam@example.com\" with subject \"Quick update\" and body \"Quick note.\"",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "write",
+      "params": {
+        "path": "outbox/81306.json",
+        "content": "{\n  \"to\": \"sam@example.com\",\n  \"subject\": \"Quick update\",\n  \"body\": \"Quick note.\"\n}"
+      },
+      "result_preview": "OK",
+      "elapsed_ms": 45
+    },
+    {
+      "step": 2,
+      "tool": "answer",
+      "params": {
+        "message": "Created email in outbox/81306.json",
+        "outcome": "ok",
+        "refs": [
+          "outbox/81306.json"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 48
+    }
+  ],
+  "score_detail": [
+    "unexpected file write 'outbox/81306.json'",
+    "missing file write 'outbox/85792.json'",
+    "missing file write 'outbox/seq.json'"
+  ],
+  "total_elapsed_ms": 41676,
+  "total_steps": 2,
+  "outcome": "ok",
+  "answer_message": "Created email in outbox/81306.json",
+  "score": 0
+}
