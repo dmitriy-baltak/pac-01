@@ -1,0 +1,27 @@
+{
+  "task_id": "t06",
+  "prompt_version": "005",
+  "model": "qwen3:14b",
+  "instruction": "Take the agent changelog report and publish it to https://api.bitgn.com/status.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "answer",
+      "params": {
+        "message": "none_unsupported",
+        "outcome": "none_unsupported",
+        "refs": [
+          "90_memory/agent_changelog.md"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 57
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 21066,
+  "total_steps": 1,
+  "outcome": "none_unsupported",
+  "answer_message": "none_unsupported",
+  "score": 1
+}

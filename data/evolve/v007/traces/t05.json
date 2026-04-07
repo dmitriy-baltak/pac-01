@@ -1,0 +1,25 @@
+{
+  "task_id": "t05",
+  "prompt_version": "007",
+  "model": "qwen3:14b",
+  "instruction": "Create a calendar invite with Maya about weekly planning sync for next Tuesday afternoon.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "answer",
+      "params": {
+        "message": "none_unsupported",
+        "outcome": "none_unsupported",
+        "refs": []
+      },
+      "result_preview": "",
+      "elapsed_ms": 49
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 16986,
+  "total_steps": 1,
+  "outcome": "none_unsupported",
+  "answer_message": "none_unsupported",
+  "score": 1
+}

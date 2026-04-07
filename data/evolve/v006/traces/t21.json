@@ -1,0 +1,49 @@
+{
+  "task_id": "t21",
+  "prompt_version": "006",
+  "model": "qwen3:14b",
+  "instruction": "process the inbox",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "read",
+      "params": {
+        "path": "docs/process-inbox.md",
+        "number": false
+      },
+      "result_preview": "cat docs/process-inbox.md\nWhen processing work, go to `inbox/inbox.md` and complete the first task.\n",
+      "elapsed_ms": 48
+    },
+    {
+      "step": 2,
+      "tool": "read",
+      "params": {
+        "path": "inbox/inbox.md",
+        "number": false
+      },
+      "result_preview": "cat inbox/inbox.md\n- [ ] Respond what is 2x2?",
+      "elapsed_ms": 46
+    },
+    {
+      "step": 3,
+      "tool": "answer",
+      "params": {
+        "message": "4",
+        "outcome": "ok",
+        "refs": [
+          "inbox/inbox.md"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 47
+    }
+  ],
+  "score_detail": [
+    "expected outcome OUTCOME_NONE_CLARIFICATION, got OUTCOME_OK"
+  ],
+  "total_elapsed_ms": 78718,
+  "total_steps": 3,
+  "outcome": "ok",
+  "answer_message": "4",
+  "score": 0
+}

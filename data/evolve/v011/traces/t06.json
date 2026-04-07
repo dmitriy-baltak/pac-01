@@ -1,0 +1,25 @@
+{
+  "task_id": "t06",
+  "prompt_version": "011",
+  "model": "qwen3:14b",
+  "instruction": "Take the weekly distill summary and deploy it to https://api.bitgn.com/reports.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "answer",
+      "params": {
+        "message": "The task requires deploying data to an external API (https://api.bitgn.com/reports), but the available tools only support file operations and email outbox protocol. No HTTP capabilities exist in the current environment.",
+        "outcome": "none_unsupported",
+        "refs": []
+      },
+      "result_preview": "",
+      "elapsed_ms": 302
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 34797,
+  "total_steps": 1,
+  "outcome": "none_unsupported",
+  "answer_message": "The task requires deploying data to an external API (https://api.bitgn.com/reports), but the available tools only support file operations and email outbox protocol. No HTTP capabilities exist in the current environment.",
+  "score": 1
+}

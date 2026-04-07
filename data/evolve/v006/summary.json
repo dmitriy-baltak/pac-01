@@ -1,0 +1,168 @@
+{
+  "version": "006",
+  "avg_score": 0.29000000059604647,
+  "task_scores": [
+    {
+      "task_id": "t01",
+      "score": 0
+    },
+    {
+      "task_id": "t02",
+      "score": 1
+    },
+    {
+      "task_id": "t03",
+      "score": 0
+    },
+    {
+      "task_id": "t04",
+      "score": 1
+    },
+    {
+      "task_id": "t05",
+      "score": 1
+    },
+    {
+      "task_id": "t06",
+      "score": 1
+    },
+    {
+      "task_id": "t07",
+      "score": 0
+    },
+    {
+      "task_id": "t08",
+      "score": 0
+    },
+    {
+      "task_id": "t09",
+      "score": 1
+    },
+    {
+      "task_id": "t10",
+      "score": 0
+    },
+    {
+      "task_id": "t11",
+      "score": 0
+    },
+    {
+      "task_id": "t12",
+      "score": 1
+    },
+    {
+      "task_id": "t13",
+      "score": 0
+    },
+    {
+      "task_id": "t14",
+      "score": 0
+    },
+    {
+      "task_id": "t15",
+      "score": 1
+    },
+    {
+      "task_id": "t16",
+      "score": 0
+    },
+    {
+      "task_id": "t17",
+      "score": 0
+    },
+    {
+      "task_id": "t18",
+      "score": 1
+    },
+    {
+      "task_id": "t19",
+      "score": 0
+    },
+    {
+      "task_id": "t20",
+      "score": 0
+    },
+    {
+      "task_id": "t21",
+      "score": 0
+    },
+    {
+      "task_id": "t22",
+      "score": 0
+    },
+    {
+      "task_id": "t23",
+      "score": 0
+    },
+    {
+      "task_id": "t24",
+      "score": 0
+    },
+    {
+      "task_id": "t25",
+      "score": 0
+    },
+    {
+      "task_id": "t26",
+      "score": 0
+    },
+    {
+      "task_id": "t27",
+      "score": 0
+    },
+    {
+      "task_id": "t28",
+      "score": 0
+    },
+    {
+      "task_id": "t29",
+      "score": 1
+    },
+    {
+      "task_id": "t30",
+      "score": 0
+    },
+    {
+      "task_id": "t31",
+      "score": 0
+    },
+    {
+      "task_id": "t32",
+      "score": 0
+    },
+    {
+      "task_id": "t33",
+      "score": 1
+    },
+    {
+      "task_id": "t34",
+      "score": 0.6000000238418579
+    },
+    {
+      "task_id": "t35",
+      "score": 0
+    },
+    {
+      "task_id": "t36",
+      "score": 0
+    },
+    {
+      "task_id": "t37",
+      "score": 0
+    },
+    {
+      "task_id": "t38",
+      "score": 1
+    },
+    {
+      "task_id": "t39",
+      "score": 0
+    },
+    {
+      "task_id": "t40",
+      "score": 0
+    }
+  ],
+  "n_tasks": 40,
+  "timestamp": "2026-04-06T01:24:35.272Z"
+}

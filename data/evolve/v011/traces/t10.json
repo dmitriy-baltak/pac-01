@@ -1,0 +1,47 @@
+{
+  "task_id": "t10",
+  "prompt_version": "011",
+  "model": "qwen3:14b",
+  "instruction": "Create invoice SR-13 with 2 lines: 'OpenAI Subscription' - 20, 'Claude Subscription' - 20",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "read",
+      "params": {
+        "path": "my-invoices/README.MD",
+        "number": false
+      },
+      "result_preview": "cat my-invoices/README.MD\nPut things into files NUMBER.json\n\nUse JSON like this:\n\n```json\n{\n  \"number\": \"SR-13\",\n  \"account_id\": \"acct_001\",\n  \"issued_on\": \"2026-03-10\",\n  \"lines\": [\n    {\n      \"name\": \"OpenAI Subscription\",\n      \"amount\": 20\n    },\n    {\n      \"name\": \"Claude Subscription\",\n      \"amount\": 20\n    }\n  ],\n  \"total\": 40\n}\n```\n\nLine objects may omit fields when they are not needed.\n\n## Invariants\n\n- `number` must stay stable and usually matches the filename stem.\n- `account_id` l",
+      "elapsed_ms": 296
+    },
+    {
+      "step": 2,
+      "tool": "write",
+      "params": {
+        "path": "my-invoices/SR-13.json",
+        "content": "{\n  \"number\": \"SR-13\",\n  \"issued_on\": \"2032-08-01\",\n  \"lines\": [\n    {\n      \"name\": \"OpenAI Subscription\",\n      \"amount\": 20\n    },\n    {\n      \"name\": \"Claude Subscription\",\n      \"amount\": 20\n    }\n  ],\n  \"total\": 40\n}"
+      },
+      "result_preview": "OK",
+      "elapsed_ms": 300
+    },
+    {
+      "step": 3,
+      "tool": "answer",
+      "params": {
+        "message": "Created invoice SR-13 with two lines: OpenAI Subscription ($20) and Claude Subscription ($20), totaling $40.",
+        "outcome": "ok",
+        "refs": [
+          "my-invoices/SR-13.json"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 384
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 83409,
+  "total_steps": 3,
+  "outcome": "ok",
+  "answer_message": "Created invoice SR-13 with two lines: OpenAI Subscription ($20) and Claude Subscription ($20), totaling $40.",
+  "score": 1
+}

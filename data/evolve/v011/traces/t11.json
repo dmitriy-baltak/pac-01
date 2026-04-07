@@ -1,0 +1,58 @@
+{
+  "task_id": "t11",
+  "prompt_version": "011",
+  "model": "qwen3:14b",
+  "instruction": "Write a brief email to \"priya@example.com\" with subject \"Project check-in\" and body \"Following up.\"",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "read",
+      "params": {
+        "path": "outbox/seq.json",
+        "number": false
+      },
+      "result_preview": "cat outbox/seq.json\n{\"id\":85625}",
+      "elapsed_ms": 300
+    },
+    {
+      "step": 2,
+      "tool": "write",
+      "params": {
+        "path": "outbox/85625.json",
+        "content": "{\n  \"to\": \"priya@example.com\",\n  \"subject\": \"Project check-in\",\n  \"body\": \"Following up.\"\n}"
+      },
+      "result_preview": "OK",
+      "elapsed_ms": 386
+    },
+    {
+      "step": 3,
+      "tool": "write",
+      "params": {
+        "path": "outbox/seq.json",
+        "content": "{\n  \"id\": 85626\n}"
+      },
+      "result_preview": "OK",
+      "elapsed_ms": 402
+    },
+    {
+      "step": 4,
+      "tool": "answer",
+      "params": {
+        "message": "Email sent to priya@example.com with subject 'Project check-in' and body 'Following up.'",
+        "outcome": "ok",
+        "refs": [
+          "outbox/85625.json",
+          "outbox/seq.json"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 401
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 79605,
+  "total_steps": 4,
+  "outcome": "ok",
+  "answer_message": "Email sent to priya@example.com with subject 'Project check-in' and body 'Following up.'",
+  "score": 1
+}

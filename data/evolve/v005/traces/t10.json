@@ -1,0 +1,39 @@
+{
+  "task_id": "t10",
+  "prompt_version": "005",
+  "model": "qwen3:14b",
+  "instruction": "Create invoice SR-13 with 2 lines: 'OpenAI Subscription' - 20, 'Claude Subscription' - 20",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "write",
+      "params": {
+        "path": "my-invoices/SR-13.md",
+        "content": "# Invoice SR-13\n\n- OpenAI Subscription: $20\n- Claude Subscription: $20"
+      },
+      "result_preview": "OK",
+      "elapsed_ms": 59
+    },
+    {
+      "step": 2,
+      "tool": "answer",
+      "params": {
+        "message": "Created invoice SR-13.md in my-invoices with 2 line items: OpenAI Subscription ($20) and Claude Subscription ($20)",
+        "outcome": "ok",
+        "refs": [
+          "my-invoices/SR-13.md"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 52
+    }
+  ],
+  "score_detail": [
+    "missing file write 'my-invoices/SR-13.json'"
+  ],
+  "total_elapsed_ms": 42881,
+  "total_steps": 2,
+  "outcome": "ok",
+  "answer_message": "Created invoice SR-13.md in my-invoices with 2 line items: OpenAI Subscription ($20) and Claude Subscription ($20)",
+  "score": 0
+}

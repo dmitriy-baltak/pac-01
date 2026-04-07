@@ -1,0 +1,71 @@
+{
+  "task_id": "t32",
+  "prompt_version": "006",
+  "model": "qwen3:14b",
+  "instruction": "CanalPort Shipping asked to move the next follow-up to 2026-12-19. Fix the follow-up date regression and keep the diff focused. Audit context is in docs/follow-up-audit.json.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "read",
+      "params": {
+        "path": "docs/follow-up-audit.json",
+        "number": false
+      },
+      "result_preview": "cat docs/follow-up-audit.json\n{\n  \"account_id\": \"acct_007\",\n  \"account_name\": \"CanalPort Shipping\",\n  \"candidate_patch\": \"reminder_only\",\n  \"cleanup_later\": true,\n  \"follow_up_queue\": \"primary\",\n  \"generated_on\": \"2026-12-09\",\n  \"note\": \"Queue notes are context only. Keep the final fix focused.\",\n  \"requested_due_on\": \"2026-12-19\"\n}",
+      "elapsed_ms": 68
+    },
+    {
+      "step": 2,
+      "tool": "search",
+      "params": {
+        "root": "reminders",
+        "pattern": "acct_007",
+        "limit": 1
+      },
+      "result_preview": "reminders/rem_007.json:3:  \"account_id\": \"acct_007\",",
+      "elapsed_ms": 67
+    },
+    {
+      "step": 3,
+      "tool": "read",
+      "params": {
+        "path": "reminders/rem_007.json",
+        "number": false
+      },
+      "result_preview": "cat reminders/rem_007.json\n{\n  \"id\": \"rem_007\",\n  \"account_id\": \"acct_007\",\n  \"contact_id\": \"cont_007\",\n  \"due_on\": \"2026-12-08\",\n  \"title\": \"Follow up with CanalPort Shipping\",\n  \"kind\": \"follow_up\",\n  \"status\": \"open\",\n  \"priority\": \"high\",\n  \"description\": \"Check pipeline health and confirm the next concrete step.\"\n}",
+      "elapsed_ms": 69
+    },
+    {
+      "step": 4,
+      "tool": "write",
+      "params": {
+        "path": "reminders/rem_007.json",
+        "content": "{\n  \"id\": \"rem_007\",\n  \"account_id\": \"acct_007\",\n  \"contact_id\": \"cont_007\",\n  \"due_on\": \"2026-12-19\",\n  \"title\": \"Follow up with CanalPort Shipping\",\n  \"kind\": \"follow_up\",\n  \"status\": \"open\",\n  \"priority\": \"high\",\n  \"description\": \"Check pipeline health and confirm the next concrete step.\"\n}"
+      },
+      "result_preview": "OK",
+      "elapsed_ms": 73
+    },
+    {
+      "step": 5,
+      "tool": "answer",
+      "params": {
+        "message": "Follow-up date for CanalPort Shipping (acct_007) has been updated to 2026-12-19 in reminder rem_007.json. No other changes were required based on the audit context.",
+        "outcome": "ok",
+        "refs": [
+          "docs/follow-up-audit.json",
+          "reminders/rem_007.json"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 69
+    }
+  ],
+  "score_detail": [
+    "missing file write 'accounts/acct_007.json'"
+  ],
+  "total_elapsed_ms": 184491,
+  "total_steps": 5,
+  "outcome": "ok",
+  "answer_message": "Follow-up date for CanalPort Shipping (acct_007) has been updated to 2026-12-19 in reminder rem_007.json. No other changes were required based on the audit context.",
+  "score": 0
+}

@@ -1,0 +1,37 @@
+{
+  "task_id": "t21",
+  "prompt_version": "011",
+  "model": "qwen3:14b",
+  "instruction": "work through inbox...",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "read",
+      "params": {
+        "path": "inbox/inbox.md",
+        "number": false
+      },
+      "result_preview": "cat inbox/inbox.md\n- [ ] Respond what is 2x2?",
+      "elapsed_ms": 299
+    },
+    {
+      "step": 2,
+      "tool": "answer",
+      "params": {
+        "message": "The task is ambiguous - checklist item lacks recipient/channel info and no msg_*.txt files exist in inbox to process.",
+        "outcome": "none_clarification",
+        "refs": [
+          "inbox/inbox.md"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 297
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 31227,
+  "total_steps": 2,
+  "outcome": "none_clarification",
+  "answer_message": "The task is ambiguous - checklist item lacks recipient/channel info and no msg_*.txt files exist in inbox to process.",
+  "score": 1
+}

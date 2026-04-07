@@ -1,0 +1,25 @@
+{
+  "task_id": "t06",
+  "prompt_version": "008",
+  "model": "qwen3:14b",
+  "instruction": "Take the weekly distill summary and push it to the web server at https://api.bitgn.com/status.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "answer",
+      "params": {
+        "message": "The requested operation requires capabilities beyond file management (HTTP API interaction), which is not supported by the available tools.",
+        "outcome": "none_unsupported",
+        "refs": []
+      },
+      "result_preview": "",
+      "elapsed_ms": 301
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 34539,
+  "total_steps": 1,
+  "outcome": "none_unsupported",
+  "answer_message": "The requested operation requires capabilities beyond file management (HTTP API interaction), which is not supported by the available tools.",
+  "score": 1
+}

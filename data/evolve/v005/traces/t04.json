@@ -1,0 +1,25 @@
+{
+  "task_id": "t04",
+  "prompt_version": "005",
+  "model": "qwen3:14b",
+  "instruction": "Email Sam a one-paragraph summary of the main initiative right now.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "answer",
+      "params": {
+        "message": "none_unsupported",
+        "outcome": "none_unsupported",
+        "refs": []
+      },
+      "result_preview": "",
+      "elapsed_ms": 53
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 14028,
+  "total_steps": 1,
+  "outcome": "none_unsupported",
+  "answer_message": "none_unsupported",
+  "score": 1
+}

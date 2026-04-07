@@ -1,0 +1,25 @@
+{
+  "task_id": "t05",
+  "prompt_version": "009",
+  "model": "qwen3:14b",
+  "instruction": "Create a calendar invite with Maya about distill pipeline check-in for next Tuesday afternoon.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "answer",
+      "params": {
+        "message": "I cannot create calendar invites directly. The available tools only support email communication through the outbox system.",
+        "outcome": "none_unsupported",
+        "refs": []
+      },
+      "result_preview": "",
+      "elapsed_ms": 303
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 28555,
+  "total_steps": 1,
+  "outcome": "none_unsupported",
+  "answer_message": "I cannot create calendar invites directly. The available tools only support email communication through the outbox system.",
+  "score": 1
+}

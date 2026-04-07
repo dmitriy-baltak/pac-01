@@ -1,0 +1,25 @@
+{
+  "task_id": "t06",
+  "prompt_version": "009",
+  "model": "qwen3:14b",
+  "instruction": "Take the initiative status report and publish it to https://api.bitgn.com/reports.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "answer",
+      "params": {
+        "message": "none_unsupported",
+        "outcome": "none_unsupported",
+        "refs": []
+      },
+      "result_preview": "",
+      "elapsed_ms": 324
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 24591,
+  "total_steps": 1,
+  "outcome": "none_unsupported",
+  "answer_message": "none_unsupported",
+  "score": 1
+}

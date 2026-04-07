@@ -17,7 +17,7 @@ const BITGN_API_KEY = process.env.BITGN_API_KEY ?? "";
 const BENCHMARK_HOST = process.env.BENCHMARK_HOST ?? "https://api.bitgn.com";
 const BENCHMARK_ID = process.env.BENCHMARK_ID ?? "bitgn/pac1-dev";
 const MODEL_ID = process.env.MODEL_ID ?? "qwen3:14b";
-const META_MODEL_ID = process.env.META_MODEL_ID ?? "qwen3:14b";
+const META_MODEL_ID = process.env.META_MODEL_ID ?? "deepseek-r1:32b";
 const HINT = process.env.HINT;
 const EVOLVE_STEPS = parseInt(process.env.EVOLVE_STEPS ?? "5", 10);
 const EVOLVE_TASKS = process.env.EVOLVE_TASKS?.split(",").filter(Boolean) ?? [];
@@ -93,14 +93,79 @@ function saveManifest(manifest: Manifest): void {
 // --- Evolution helpers ---
 
 function formatExperimentHistory(manifest: Manifest): string {
-  const entries = manifest.history.slice(-10);
+  const entries = manifest.history.slice(-12);
   if (entries.length === 0) return "No prior experiments.";
-  return entries.map((e) => {
+
+  const lines: string[] = [];
+
+  // --- Section 1: Full trajectory with reasoning ---
+  lines.push("### Trajectory (oldest → newest)");
+  for (const e of entries) {
     const tokens = e.prompt_tokens ?? "?";
-    const status = e.accepted ? "accepted" : "rejected";
-    const reason = e.reasoning ? e.reasoning.slice(0, 60).replace(/\n/g, " ") : "";
-    return `v${e.version} | ${e.avg_score.toFixed(2)} | ${tokens}tk | ${status} | ${reason}`;
-  }).join("\n");
+    const tag = e.accepted ? "✓ ACCEPTED" : "✗ REJECTED";
+    lines.push(`\nv${e.version} | score ${e.avg_score.toFixed(2)} | ${tokens}tk | ${tag}`);
+    if (e.reasoning) {
+      // Show full reasoning (up to 400 chars) so the meta-agent can learn from it
+      const reason = e.reasoning.replace(/\n/g, " ").slice(0, 400);
+      lines.push(`  Why: ${reason}`);
+    }
+  }
+
+  // --- Section 2: What worked vs. what didn't ---
+  const accepted = entries.filter((e) => e.accepted && e.avg_score > 0);
+  const rejected = entries.filter(
+    (e) => !e.accepted && e.reasoning &&
+    !e.reasoning.startsWith("Meta-agent error") &&
+    !e.reasoning.startsWith("Validation failed"),
+  );
+
+  if (accepted.length >= 2 || rejected.length > 0) {
+    lines.push("\n### Patterns From History");
+
+    if (accepted.length >= 2) {
+      lines.push("\nChanges that IMPROVED score:");
+      for (let i = 1; i < accepted.length; i++) {
+        const prev = accepted[i - 1];
+        const curr = accepted[i];
+        const delta = curr.avg_score - prev.avg_score;
+        const sign = delta >= 0 ? "+" : "";
+        const reason = (curr.reasoning || "").replace(/\n/g, " ").slice(0, 250);
+        lines.push(`  v${prev.version}→v${curr.version} (${sign}${delta.toFixed(3)}): ${reason}`);
+      }
+    }
+
+    if (rejected.length > 0) {
+      lines.push("\nChanges that FAILED (do not repeat these approaches):");
+      for (const r of rejected.slice(-5)) {
+        const reason = (r.reasoning || "").replace(/\n/g, " ").slice(0, 250);
+        lines.push(`  v${r.version} (score ${r.avg_score.toFixed(2)}): ${reason}`);
+      }
+    }
+  }
+
+  // --- Section 3: Token/score correlation ---
+  const withTokens = entries
+    .filter((e): e is ManifestEntry & { prompt_tokens: number } => e.prompt_tokens !== undefined && e.avg_score > 0);
+
+  if (withTokens.length >= 2) {
+    const best = [...withTokens].sort((a, b) => b.avg_score - a.avg_score)[0];
+    const smallest = [...withTokens].sort((a, b) => a.prompt_tokens - b.prompt_tokens)[0];
+    lines.push("\n### Token Budget Insight");
+    lines.push(`  Best score: v${best.version} (${best.avg_score.toFixed(2)} @ ${best.prompt_tokens}tk)`);
+    lines.push(`  Most compact: v${smallest.version} (${smallest.avg_score.toFixed(2)} @ ${smallest.prompt_tokens}tk)`);
+
+    // Detect bloat trend: tokens rising without score improvement
+    const acceptedWithTokens = withTokens.filter((e) => e.accepted);
+    if (acceptedWithTokens.length >= 2) {
+      const first = acceptedWithTokens[0];
+      const last = acceptedWithTokens[acceptedWithTokens.length - 1];
+      if (last.prompt_tokens > first.prompt_tokens && last.avg_score <= first.avg_score) {
+        lines.push(`  ⚠ Bloat: tokens grew ${first.prompt_tokens}→${last.prompt_tokens} but score fell ${first.avg_score.toFixed(2)}→${last.avg_score.toFixed(2)}. Compress or restructure.`);
+      }
+    }
+  }
+
+  return lines.join("\n");
 }
 
 function deriveFocusDirective(manifest: Manifest): string {

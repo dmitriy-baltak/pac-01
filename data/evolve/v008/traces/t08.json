@@ -1,0 +1,25 @@
+{
+  "task_id": "t08",
+  "prompt_version": "008",
+  "model": "qwen3:14b",
+  "instruction": "Process this inbox ent",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "answer",
+      "params": {
+        "message": "none_clarification",
+        "outcome": "none_clarification",
+        "refs": []
+      },
+      "result_preview": "",
+      "elapsed_ms": 302
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 57649,
+  "total_steps": 1,
+  "outcome": "none_clarification",
+  "answer_message": "none_clarification",
+  "score": 1
+}

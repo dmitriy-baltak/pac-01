@@ -1,0 +1,41 @@
+{
+  "task_id": "t11",
+  "prompt_version": "005",
+  "model": "qwen3:14b",
+  "instruction": "Write a brief email to \"priya@example.com\" with subject \"Lunch tomorrow\" and body \"Following up.\"",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "write",
+      "params": {
+        "path": "outbox/81306.json",
+        "content": "{\"to\": \"priya@example.com\", \"subject\": \"Lunch tomorrow\", \"body\": \"Following up.\"}"
+      },
+      "result_preview": "OK",
+      "elapsed_ms": 58
+    },
+    {
+      "step": 2,
+      "tool": "answer",
+      "params": {
+        "message": "Email to priya@example.com with subject 'Lunch tomorrow' has been saved in outbox/81306.json",
+        "outcome": "ok",
+        "refs": [
+          "outbox/81306.json"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 73
+    }
+  ],
+  "score_detail": [
+    "unexpected file write 'outbox/81306.json'",
+    "missing file write 'outbox/87069.json'",
+    "missing file write 'outbox/seq.json'"
+  ],
+  "total_elapsed_ms": 68627,
+  "total_steps": 2,
+  "outcome": "ok",
+  "answer_message": "Email to priya@example.com with subject 'Lunch tomorrow' has been saved in outbox/81306.json",
+  "score": 0
+}

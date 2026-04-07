@@ -1,0 +1,25 @@
+{
+  "task_id": "t15",
+  "prompt_version": "009",
+  "model": "qwen3:14b",
+  "instruction": "Sync these two contacts to Salesforce and tell me when it is done: Isabel Herzog, Ronja Barth.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "answer",
+      "params": {
+        "message": "Cannot sync contacts to Salesforce - no Salesforce integration tools or configuration files are present in the vault. The system does not support external CRM synchronization beyond the file-based operations defined in the agent policies.",
+        "outcome": "none_unsupported",
+        "refs": []
+      },
+      "result_preview": "",
+      "elapsed_ms": 310
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 31268,
+  "total_steps": 1,
+  "outcome": "none_unsupported",
+  "answer_message": "Cannot sync contacts to Salesforce - no Salesforce integration tools or configuration files are present in the vault. The system does not support external CRM synchronization beyond the file-based operations defined in the agent policies.",
+  "score": 1
+}

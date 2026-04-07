@@ -1,0 +1,48 @@
+{
+  "task_id": "t16",
+  "prompt_version": "011",
+  "model": "qwen3:14b",
+  "instruction": "What is the email address of Lange Theresa? Return only the email",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "search",
+      "params": {
+        "root": "contacts/",
+        "pattern": "Lange",
+        "limit": 20
+      },
+      "result_preview": "contacts/cont_006.json:4:  \"full_name\": \"Theresa Lange\",",
+      "elapsed_ms": 373
+    },
+    {
+      "step": 2,
+      "tool": "read",
+      "params": {
+        "path": "contacts/cont_006.json",
+        "number": false
+      },
+      "result_preview": "cat contacts/cont_006.json\n{\n  \"id\": \"cont_006\",\n  \"account_id\": \"acct_006\",\n  \"full_name\": \"Theresa Lange\",\n  \"role\": \"Finance Director\",\n  \"email\": \"theresa.lange@silverline-retail.example.com\",\n  \"preferred_tone\": \"direct\",\n  \"last_seen_on\": \"2026-05-20\"\n}",
+      "elapsed_ms": 324
+    },
+    {
+      "step": 3,
+      "tool": "answer",
+      "params": {
+        "message": "theresa.lange@silverline-retail.example.com",
+        "outcome": "ok",
+        "refs": [
+          "contacts/cont_006.json"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 308
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 226965,
+  "total_steps": 3,
+  "outcome": "ok",
+  "answer_message": "theresa.lange@silverline-retail.example.com",
+  "score": 1
+}
