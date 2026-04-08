@@ -1,0 +1,47 @@
+{
+  "task_id": "t17",
+  "prompt_version": "012",
+  "model": "gpt-4o-mini",
+  "instruction": "Email reminder to Neumann Sebastian at Acme Logistics with subject \"Reminder on expansion\" and about \"Quick check-in on next steps from our last conversation.\".",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "search",
+      "params": {
+        "root": "contacts/",
+        "pattern": "Neumann Sebastian",
+        "limit": 1
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 148
+    },
+    {
+      "step": 2,
+      "tool": "search",
+      "params": {
+        "root": "accounts/",
+        "pattern": "Acme Logistics",
+        "limit": 1
+      },
+      "result_preview": "accounts/acct_003.json:3:  \"name\": \"Acme Logistics\",",
+      "elapsed_ms": 126
+    },
+    {
+      "step": 3,
+      "tool": "read",
+      "params": {
+        "path": "accounts/acct_003.json",
+        "number": false
+      },
+      "result_preview": "cat accounts/acct_003.json\n{\n  \"id\": \"acct_003\",\n  \"name\": \"Acme Logistics\",\n  \"legal_name\": \"Acme Logistics B.V.\",\n  \"industry\": \"logistics\",\n  \"region\": \"Benelux\",\n  \"country\": \"Netherlands\",\n  \"tier\": \"growth\",\n  \"status\": \"active\",\n  \"primary_contact_id\": \"cont_003\",\n  \"account_manager\": \"Sebastian Neumann\",\n  \"last_contacted_on\": \"2026-09-07\",\n  \"next_follow_up_on\": \"2026-09-04\",\n  \"notes\": \"Procured separately from Acme Robotics after a Benelux warehouse director heard about the earlier Ac",
+      "elapsed_ms": 118
+    }
+  ],
+  "score_detail": [
+    "expected outcome OUTCOME_OK, got OUTCOME_ERR_INTERNAL"
+  ],
+  "total_elapsed_ms": 6915,
+  "total_steps": 3,
+  "error": "Exhausted step limit",
+  "score": 0
+}

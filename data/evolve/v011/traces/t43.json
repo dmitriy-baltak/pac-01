@@ -2,67 +2,34 @@
   "task_id": "t43",
   "prompt_version": "011",
   "model": "qwen3:14b",
-  "instruction": "I captured an article 17 days ago. Which one was it?",
+  "instruction": "What article did I capture 23 days ago?",
   "steps": [
     {
       "step": 2,
+      "tool": "list",
+      "params": {
+        "path": "/01_capture/"
+      },
+      "result_preview": "influential/",
+      "elapsed_ms": 123
+    },
+    {
+      "step": 4,
       "tool": "search",
       "params": {
-        "root": "/",
-        "pattern": "2026-03-12",
+        "root": "/01_capture/",
+        "pattern": "2026-03-07",
         "limit": 20
       },
       "result_preview": "(no matches)",
-      "elapsed_ms": 233
-    },
-    {
-      "step": 5,
-      "tool": "tree",
-      "params": {
-        "root": "/01_capture",
-        "level": 2
-      },
-      "result_preview": "01_capture/\n└── influential/\n    ├── 2026-02-10__how-i-use-claude-code.md\n    ├── 2026-02-15__openai-harness-engineering.md\n    ├── 2026-03-06__anthropic-biology-of-llms.md\n    ├── 2026-03-17__intercom-claude-code-platform.md\n    └── 2026-03-23__hn-structured-outputs-practical-notes.md",
-      "elapsed_ms": 251
-    },
-    {
-      "step": 7,
-      "tool": "read",
-      "params": {
-        "path": "/01_capture/influential/2026-02-10__how-i-use-claude-code.md",
-        "number": false
-      },
-      "result_preview": "cat 01_capture/influential/2026-02-10__how-i-use-claude-code.md\n# How I Use Claude Code\n\n- **Source URL:** https://boristane.com/blog/how-i-use-claude-code/\n- **Captured for this template on:** 2026-02-10\n- **Why keep this:** it is a practical operator write-up about how to use a coding agent without giving up design control\n\n## Raw notes\n\n- Separate research, planning, and implementation instead of jumping straight to code.\n- Keep the plan as a persistent markdown artifact and review it before ",
-      "elapsed_ms": 190
-    },
-    {
-      "step": 8,
-      "tool": "answer",
-      "params": {
-        "message": "No article was captured on March 12, 2026. Exhaustive checks of 01_capture/ and 00_inbox/ found no files for this date. The closest available files are: 1) March 6: 2026-03-06__anthropic-biology-of-llms.md 2) March 17: 2026-03-17__intercom-claude-code-platform.md 3) March 23: 2026-03-23__hn-structured-outputs-practical-notes.md and inbox files from March 23.",
-        "outcome": "ok",
-        "refs": [
-          "00_inbox/2026-03-23__hn-agent-kernel-stateful-agents.md",
-          "00_inbox/2026-03-23__hn-reports-of-codes-death.md",
-          "00_inbox/2026-03-23__hn-vibe-coding-spam.md",
-          "00_inbox/2026-03-23__hn-walmart-chatgpt-checkout.md",
-          "01_capture/influential/2026-02-10__how-i-use-claude-code.md",
-          "01_capture/influential/2026-02-15__openai-harness-engineering.md",
-          "01_capture/influential/2026-03-06__anthropic-biology-of-llms.md",
-          "01_capture/influential/2026-03-17__intercom-claude-code-platform.md",
-          "01_capture/influential/2026-03-23__hn-structured-outputs-practical-notes.md"
-        ]
-      },
-      "result_preview": "",
-      "elapsed_ms": 126
+      "elapsed_ms": 119
     }
   ],
   "score_detail": [
-    "expected outcome OUTCOME_NONE_CLARIFICATION, got OUTCOME_OK"
+    "expected outcome OUTCOME_NONE_CLARIFICATION, got OUTCOME_ERR_INTERNAL"
   ],
-  "total_elapsed_ms": 1530683,
-  "total_steps": 4,
-  "outcome": "ok",
-  "answer_message": "No article was captured on March 12, 2026. Exhaustive checks of 01_capture/ and 00_inbox/ found no files for this date. The closest available files are: 1) March 6: 2026-03-06__anthropic-biology-of-llms.md 2) March 17: 2026-03-17__intercom-claude-code-platform.md 3) March 23: 2026-03-23__hn-structured-outputs-practical-notes.md and inbox files from March 23.",
+  "total_elapsed_ms": 3130851,
+  "total_steps": 2,
+  "error": "Exhausted step limit",
   "score": 0
 }

@@ -1,0 +1,14 @@
+{
+  "task_id": "t14",
+  "prompt_version": "012",
+  "model": "gpt-4o-mini",
+  "instruction": "Send email to Aperture AI Labs with subject \"Security review follow-up\" and body \"Checking in on the open security review. Happy to answer questions and align on next steps.\"",
+  "steps": [],
+  "score_detail": [
+    "expected outcome OUTCOME_OK, got OUTCOME_ERR_INTERNAL"
+  ],
+  "total_elapsed_ms": 1333,
+  "total_steps": 0,
+  "error": "Exhausted step limit",
+  "score": 0
+}

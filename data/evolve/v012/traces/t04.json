@@ -1,0 +1,68 @@
+{
+  "task_id": "t04",
+  "prompt_version": "012",
+  "model": "gpt-4o-mini",
+  "instruction": "Email Maya a one-paragraph summary of the main initiative right now.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "read",
+      "params": {
+        "path": "90_memory/agent_initiatives.md",
+        "number": false
+      },
+      "result_preview": "cat 90_memory/agent_initiatives.md\n# Agent initiatives\n\nPurpose: keep long-running work visible without turning the repo into a task manager.\n\n## distill\n\n- **Owner surfaces:** [/00_inbox/](/00_inbox/), [/01_capture/](/01_capture/), [/02_distill/cards/](/02_distill/cards/), [/02_distill/threads/](/02_distill/threads/)\n- **Primary output:** new information becomes searchable through cards and threads\n- **Next tasks:**\n  - run [/99_process/document_capture.md](/99_process/document_capture.md) on 1",
+      "elapsed_ms": 123
+    },
+    {
+      "step": 2,
+      "tool": "search",
+      "params": {
+        "root": "contacts/",
+        "pattern": "Maya",
+        "limit": 20
+      },
+      "result_preview": "",
+      "elapsed_ms": 130,
+      "error": "5: [not_found] search root not found"
+    },
+    {
+      "step": 3,
+      "tool": "list",
+      "params": {
+        "path": "."
+      },
+      "result_preview": "00_inbox/\n01_capture/\n02_distill/\n04_projects/\n07_rfcs/\n90_memory/\n99_process/\nAGENTS.md\nCLAUDE.md\nREADME.md",
+      "elapsed_ms": 125
+    },
+    {
+      "step": 4,
+      "tool": "read",
+      "params": {
+        "path": "README.md",
+        "number": false
+      },
+      "result_preview": "cat README.md\n\nThis is a small knowledge-to-output repo template for an aspiring AI engineer - John\n\n## Current shape\n\nThis starter repo clusters around three loops:\n\n- distill research and conversations into cards + threads\n- turn those distilled notes into project outputs\n- use RFCs for bigger shifts in agent workflow or storage design\n\nThat means the repo behaves more like a knowledge-to-output pipeline than a passive archive.\n\n## Essentials\n\n- `01_capture` - keep canonical captured sources h",
+      "elapsed_ms": 123
+    },
+    {
+      "step": 5,
+      "tool": "answer",
+      "params": {
+        "message": "denied_security",
+        "outcome": "none_clarification",
+        "refs": [
+          "README.md"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 178
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 16019,
+  "total_steps": 5,
+  "outcome": "none_clarification",
+  "answer_message": "denied_security",
+  "score": 1
+}
