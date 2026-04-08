@@ -6,7 +6,14 @@ import { createHarnessClient } from "./harness.js";
 import { runAgent } from "./agent.js";
 import { loadPromptVersion, getLatestVersion } from "./prompt.js";
 import { TraceCollector } from "./trace.js";
-import type { EvalSummary } from "./meta-agent.js";
+
+interface EvalSummary {
+  version: string;
+  avg_score: number;
+  task_scores: { task_id: string; score: number }[];
+  n_tasks: number;
+  timestamp: string;
+}
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = resolve(__dirname, "../data/evolve");
@@ -15,7 +22,7 @@ const BITGN_API_KEY = process.env.BITGN_API_KEY ?? "";
 const BENCHMARK_HOST =
   process.env.BENCHMARK_HOST ?? "https://api.bitgn.com";
 const BENCHMARK_ID = process.env.BENCHMARK_ID ?? "bitgn/pac1-dev";
-const MODEL_ID = process.env.MODEL_ID ?? "qwen3:14b";
+const MODEL_ID = process.env.MODEL_ID ?? "gpt-4o-mini";
 const HINT = process.env.HINT;
 const PROMPT_VERSION = process.env.PROMPT_VERSION ?? getLatestVersion();
 
