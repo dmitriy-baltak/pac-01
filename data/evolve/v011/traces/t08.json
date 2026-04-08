@@ -13,11 +13,11 @@
         "refs": []
       },
       "result_preview": "",
-      "elapsed_ms": 415
+      "elapsed_ms": 122
     }
   ],
   "score_detail": [],
-  "total_elapsed_ms": 41484,
+  "total_elapsed_ms": 43639,
   "total_steps": 1,
   "outcome": "none_clarification",
   "answer_message": "none_clarification",
