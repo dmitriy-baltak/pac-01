@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "tsx src/main.ts",
     "task": "tsx src/main.ts",
-    "evolve": "tsx src/evolve.ts",
     "fast": "tsx src/main.ts t11 t13 t14 t36 t40",
     "build": "tsc",
     "start": "node dist/main.js"

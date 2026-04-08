@@ -322,8 +322,24 @@ export async function runAgent(
       };
     }
 
+    // Fix unrecognized or missing tool names (GPT models sometimes use "complete", "done", null, etc.)
+    if (raw && typeof raw === "object") {
+      const VALID_TOOLS = new Set(["read", "write", "delete", "mkdir", "move", "list", "tree", "find", "search", "context", "answer"]);
+      const r = raw as Record<string, unknown>;
+      const action = r.action as Record<string, unknown> | undefined;
+      if (action && (!action.tool || !VALID_TOOLS.has(action.tool as string))) {
+        console.log(`\x1b[33mGUARD\x1b[0m: Fixing invalid tool "${action.tool}" → "answer"`);
+        action.tool = "answer";
+        action.outcome = action.outcome ?? "ok";
+        action.message = action.message ?? (r.current_state as string ?? "Task completed.");
+        action.refs = action.refs ?? [];
+      }
+    }
+
     const parsed = NextStep.safeParse(raw);
     if (!parsed.success) {
+      // Log the raw response for debugging
+      console.log(`\x1b[31mDEBUG\x1b[0m: Raw response: ${JSON.stringify(raw).slice(0, 500)}`);
       consecutiveParseErrors++;
       console.log(
         `\x1b[31mERR\x1b[0m: Zod validation failed (step ${step + 1}, attempt ${consecutiveParseErrors}): ${parsed.error.message}`,
