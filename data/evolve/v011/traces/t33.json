@@ -2,36 +2,36 @@
   "task_id": "t33",
   "prompt_version": "011",
   "model": "qwen3:14b",
-  "instruction": "Capture this snippet from website docs.anthropic.com into 01_capture/influential/2026-04-04__structured-outputs-clip.md: \"Teams get more leverage from agent tooling when they treat prompts, evals, and review loops as one system rather than three separate concerns. The practical bottleneck shifts from generating text to deciding what is safe to ship and what needs another pass.\"",
+  "instruction": "Capture this snippet from website substack.com into 01_capture/influential/2026-04-04__prompting-review-snippet.md: \"A recurring theme in harness design is that small, deterministic workflows beat large autonomous loops when the task surface is still changing week to week.\"",
   "steps": [
     {
       "step": 1,
       "tool": "write",
       "params": {
-        "path": "01_capture/influential/2026-04-04__structured-outputs-clip.md",
-        "content": "Teams get more leverage from agent tooling when they treat prompts, evals, and review loops as one system rather than three separate concerns. The practical bottleneck shifts from generating text to deciding what is safe to ship and what needs another pass."
+        "path": "01_capture/influential/2026-04-04__prompting-review-snippet.md",
+        "content": "A recurring theme in harness design is that small, deterministic workflows beat large autonomous loops when the task surface is still changing week to week."
       },
       "result_preview": "OK",
-      "elapsed_ms": 121
+      "elapsed_ms": 141
     },
     {
       "step": 2,
       "tool": "answer",
       "params": {
-        "message": "Captured the snippet into 01_capture/influential/2026-04-04__structured-outputs-clip.md",
+        "message": "The quote has been captured into 01_capture/influential/2026-04-04__prompting-review-snippet.md",
         "outcome": "ok",
         "refs": [
-          "01_capture/influential/2026-04-04__structured-outputs-clip.md"
+          "01_capture/influential/2026-04-04__prompting-review-snippet.md"
         ]
       },
       "result_preview": "",
-      "elapsed_ms": 124
+      "elapsed_ms": 126
     }
   ],
   "score_detail": [],
-  "total_elapsed_ms": 51093,
+  "total_elapsed_ms": 65659,
   "total_steps": 2,
   "outcome": "ok",
-  "answer_message": "Captured the snippet into 01_capture/influential/2026-04-04__structured-outputs-clip.md",
+  "answer_message": "The quote has been captured into 01_capture/influential/2026-04-04__prompting-review-snippet.md",
   "score": 1
 }

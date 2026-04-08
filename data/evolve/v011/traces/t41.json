@@ -1,0 +1,25 @@
+{
+  "task_id": "t41",
+  "prompt_version": "011",
+  "model": "qwen3:14b",
+  "instruction": "What date is in 16 days? Answer only YYYY-MM-DD",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "answer",
+      "params": {
+        "message": "2026-04-07",
+        "outcome": "ok",
+        "refs": []
+      },
+      "result_preview": "",
+      "elapsed_ms": 120
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 105649,
+  "total_steps": 1,
+  "outcome": "ok",
+  "answer_message": "2026-04-07",
+  "score": 1
+}

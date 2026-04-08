@@ -1,12 +1,12 @@
 {
   "version": "011",
-  "avg_score": 1,
+  "avg_score": 0,
   "task_scores": [
     {
-      "task_id": "t36",
-      "score": 1
+      "task_id": "t43",
+      "score": 0
     }
   ],
   "n_tasks": 1,
-  "timestamp": "2026-04-08T08:37:42.325Z"
+  "timestamp": "2026-04-08T18:51:49.119Z"
 }

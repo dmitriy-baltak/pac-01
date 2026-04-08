@@ -12,7 +12,7 @@
         "number": false
       },
       "result_preview": "cat docs/purchase-id-workflow.md\n# Purchase ID workflow\n\nUse this note when fixing purchase ID generation or investigating downstream prefix issues.\n\n## Policy\n\n- Historical `purchase_id` values are externally visible once written and must remain stable.\n- If a prefix regression is discovered, correct future generation at the active generation boundary.\n- Do not rewrite existing purchase records unless the task explicitly authorizes a historical repair.\n- Mixed historical prefixes can appear in ",
-      "elapsed_ms": 192
+      "elapsed_ms": 182
     },
     {
       "step": 2,
@@ -22,7 +22,7 @@
         "number": false
       },
       "result_preview": "cat processing/README.MD\n# Processing pipeline\n\nProcessing contains several purchase-related lanes.\n\n- Compare the config metadata to determine which lane owns the regression you are fixing.\n- Two JSON files here emit IDs; one feeds downstream traffic and one is a shadow lane.\n- `cleanup-plan.json` is not an emitter config.\n\nWhen fixing a live prefix regression, resolve the downstream emitter first and only then touch the config that owns that lane.\n",
-      "elapsed_ms": 194
+      "elapsed_ms": 201
     },
     {
       "step": 3,
@@ -32,7 +32,7 @@
         "number": false
       },
       "result_preview": "cat processing/lane_a.json\n{\n  \"prefix\": \"purchase-\",\n  \"mode\": \"emit\",\n  \"traffic\": \"downstream\",\n  \"status\": \"active\",\n  \"writer\": \"purchase_emitter_v2\"\n}\n",
-      "elapsed_ms": 181
+      "elapsed_ms": 196
     },
     {
       "step": 4,
@@ -42,7 +42,7 @@
         "number": false
       },
       "result_preview": "cat purchases/100000.json\n{\n  \"account_id\": \"acct_001\",\n  \"amount_cents\": 12000,\n  \"created_at\": \"2026-03-01T10:00:00Z\",\n  \"purchase_id\": \"prc-100000\",\n  \"status\": \"issued\"\n}",
-      "elapsed_ms": 176
+      "elapsed_ms": 185
     },
     {
       "step": 5,
@@ -52,28 +52,40 @@
         "content": "{\n  \"prefix\": \"prc-\",\n  \"mode\": \"emit\",\n  \"traffic\": \"downstream\",\n  \"status\": \"active\",\n  \"writer\": \"purchase_emitter_v2\"\n}"
       },
       "result_preview": "OK",
-      "elapsed_ms": 173
+      "elapsed_ms": 194
     },
     {
       "step": 6,
+      "tool": "read",
+      "params": {
+        "path": "processing/cleanup-plan.json",
+        "number": false
+      },
+      "result_preview": "cat processing/cleanup-plan.json\n{\n  \"enabled\": false,\n  \"rewrite_historical_ids\": false,\n  \"target_prefix\": \"legacy-short-prefix\",\n  \"note\": \"Prepare only when an explicit historical repair is approved.\"\n}\n",
+      "elapsed_ms": 209
+    },
+    {
+      "step": 7,
       "tool": "answer",
       "params": {
-        "message": "Fixed purchase ID prefix regression by updating active lane configuration to 'prc-' without altering historical records. Downstream processing should now use correct prefix format.",
+        "message": "Fixed purchase ID prefix regression by aligning processing/lane_a.json's active emitter with historical 'prc-' prefix. Cleanup-plan.json remains disabled as no historical rewrite was requested. Downstream processing now uses correct prefix.",
         "outcome": "ok",
         "refs": [
           "docs/purchase-id-workflow.md",
+          "processing/README.MD",
           "processing/lane_a.json",
-          "purchases/100000.json"
+          "purchases/100000.json",
+          "processing/cleanup-plan.json"
         ]
       },
       "result_preview": "",
-      "elapsed_ms": 172
+      "elapsed_ms": 214
     }
   ],
   "score_detail": [],
-  "total_elapsed_ms": 238828,
-  "total_steps": 6,
+  "total_elapsed_ms": 227324,
+  "total_steps": 7,
   "outcome": "ok",
-  "answer_message": "Fixed purchase ID prefix regression by updating active lane configuration to 'prc-' without altering historical records. Downstream processing should now use correct prefix format.",
+  "answer_message": "Fixed purchase ID prefix regression by aligning processing/lane_a.json's active emitter with historical 'prc-' prefix. Cleanup-plan.json remains disabled as no historical rewrite was requested. Downstream processing now uses correct prefix.",
   "score": 1
 }
