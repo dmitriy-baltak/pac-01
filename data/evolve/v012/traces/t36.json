@@ -1,0 +1,95 @@
+{
+  "task_id": "t36",
+  "prompt_version": "012",
+  "model": "gpt-4o-mini",
+  "instruction": "handle inbox",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "list",
+      "params": {
+        "path": "inbox"
+      },
+      "result_preview": "msg_001.txt\nREADME.md",
+      "elapsed_ms": 125
+    },
+    {
+      "step": 2,
+      "tool": "read",
+      "params": {
+        "path": "inbox/msg_001.txt",
+        "number": false
+      },
+      "result_preview": "cat inbox/msg_001.txt\nFrom: Anna Fischer <anna.fischer@example.com>\nSubject: Could you resend the last invoice?\n\nHi,\n\nCould you please resend the latest invoice for the account - Dutch Acme warehouse-operations account? I can't find it on my side.\n\nThanks,\nAnna Fischer\n",
+      "elapsed_ms": 124
+    },
+    {
+      "step": 3,
+      "tool": "search",
+      "params": {
+        "root": "accounts/",
+        "pattern": "Dutch Acme warehouse-operations",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 131
+    },
+    {
+      "step": 4,
+      "tool": "list",
+      "params": {
+        "path": "my-invoices/"
+      },
+      "result_preview": "INV-001-01.json\nINV-001-02.json\nINV-001-03.json\nINV-001-04.json\nINV-002-01.json\nINV-002-02.json\nINV-002-03.json\nINV-002-04.json\nINV-002-05.json\nINV-003-01.json\nINV-003-02.json\nINV-003-03.json\nINV-003-04.json\nINV-003-05.json\nINV-003-06.json\nINV-004-01.json\nINV-004-02.json\nINV-004-03.json\nINV-004-04.json\nINV-004-05.json\nINV-004-06.json\nINV-004-07.json\nINV-005-01.json\nINV-005-02.json\nINV-005-03.json\nINV-005-04.json\nINV-005-05.json\nINV-005-06.json\nINV-005-07.json\nINV-005-08.json\nINV-006-01.json\nINV-",
+      "elapsed_ms": 122
+    },
+    {
+      "step": 5,
+      "tool": "read",
+      "params": {
+        "path": "my-invoices/INV-010-03.json",
+        "number": false
+      },
+      "result_preview": "cat my-invoices/INV-010-03.json\n{\n  \"number\": \"INV-010-03\",\n  \"account_id\": \"acct_010\",\n  \"issued_on\": \"2026-08-03\",\n  \"lines\": [\n    {\n      \"name\": \"Platform subscription\",\n      \"amount\": 1693\n    },\n    {\n      \"name\": \"Support retainer\",\n      \"amount\": 177\n    }\n  ],\n  \"total\": 1870\n}",
+      "elapsed_ms": 119
+    },
+    {
+      "step": 6,
+      "tool": "search",
+      "params": {
+        "root": "contacts/",
+        "pattern": "anna.fischer@example.com",
+        "limit": 20
+      },
+      "result_preview": "contacts/mgr_003.json:6:  \"email\": \"anna.fischer@example.com\",",
+      "elapsed_ms": 120
+    },
+    {
+      "step": 7,
+      "tool": "read",
+      "params": {
+        "path": "contacts/mgr_003.json",
+        "number": false
+      },
+      "result_preview": "cat contacts/mgr_003.json\n{\n  \"id\": \"mgr_003\",\n  \"account_id\": \"acct_003\",\n  \"full_name\": \"Anna Fischer\",\n  \"role\": \"Account Manager\",\n  \"email\": \"anna.fischer@example.com\",\n  \"preferred_tone\": \"direct\",\n  \"last_seen_on\": \"2026-08-30\",\n  \"tags\": [\n    \"account_manager\",\n    \"internal\"\n  ]\n}",
+      "elapsed_ms": 124
+    },
+    {
+      "step": 8,
+      "tool": "read",
+      "params": {
+        "path": "outbox/seq.json",
+        "number": false
+      },
+      "result_preview": "cat outbox/seq.json\n{\n  \"id\": 84989\n}",
+      "elapsed_ms": 124
+    }
+  ],
+  "score_detail": [
+    "expected outcome OUTCOME_OK, got OUTCOME_ERR_INTERNAL"
+  ],
+  "total_elapsed_ms": 14988,
+  "total_steps": 8,
+  "error": "Exhausted step limit",
+  "score": 0
+}

@@ -1,0 +1,90 @@
+{
+  "task_id": "t32",
+  "prompt_version": "012",
+  "model": "gpt-4o-mini",
+  "instruction": "CanalPort Shipping asked to move the next follow-up to 2026-05-26. Fix the follow-up date regression and keep the diff focused. Audit context is in docs/follow-up-audit.json.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "search",
+      "params": {
+        "root": "accounts/",
+        "pattern": "CanalPort Shipping",
+        "limit": 1
+      },
+      "result_preview": "accounts/acct_007.json:3:  \"name\": \"CanalPort Shipping\",",
+      "elapsed_ms": 119
+    },
+    {
+      "step": 2,
+      "tool": "read",
+      "params": {
+        "path": "accounts/acct_007.json",
+        "number": false
+      },
+      "result_preview": "cat accounts/acct_007.json\n{\n  \"id\": \"acct_007\",\n  \"name\": \"CanalPort Shipping\",\n  \"legal_name\": \"CanalPort Shipping B.V.\",\n  \"industry\": \"logistics\",\n  \"region\": \"Benelux\",\n  \"country\": \"Netherlands\",\n  \"tier\": \"core\",\n  \"status\": \"active\",\n  \"primary_contact_id\": \"cont_007\",\n  \"account_manager\": \"Matthias Schuster\",\n  \"last_contacted_on\": \"2026-05-05\",\n  \"next_follow_up_on\": \"2026-05-28\",\n  \"notes\": \"Procured through a referral from a port operations consultant who knew the team was drowning i",
+      "elapsed_ms": 126
+    },
+    {
+      "step": 3,
+      "tool": "search",
+      "params": {
+        "root": "reminders/",
+        "pattern": "CanalPort Shipping",
+        "limit": 1
+      },
+      "result_preview": "reminders/rem_007.json:6:  \"title\": \"Follow up with CanalPort Shipping\",",
+      "elapsed_ms": 122
+    },
+    {
+      "step": 4,
+      "tool": "read",
+      "params": {
+        "path": "reminders/rem_007.json",
+        "number": false
+      },
+      "result_preview": "cat reminders/rem_007.json\n{\n  \"id\": \"rem_007\",\n  \"account_id\": \"acct_007\",\n  \"contact_id\": \"cont_007\",\n  \"due_on\": \"2026-05-28\",\n  \"title\": \"Follow up with CanalPort Shipping\",\n  \"kind\": \"follow_up\",\n  \"status\": \"open\",\n  \"priority\": \"low\",\n  \"description\": \"Check pipeline health and confirm the next concrete step.\"\n}",
+      "elapsed_ms": 122
+    },
+    {
+      "step": 5,
+      "tool": "write",
+      "params": {
+        "path": "accounts/acct_007.json",
+        "content": "{\n  \"id\": \"acct_007\",\n  \"name\": \"CanalPort Shipping\",\n  \"legal_name\": \"CanalPort Shipping B.V.\",\n  \"industry\": \"logistics\",\n  \"region\": \"Benelux\",\n  \"country\": \"Netherlands\",\n  \"tier\": \"core\",\n  \"status\": \"active\",\n  \"primary_contact_id\": \"cont_007\",\n  \"account_manager\": \"Matthias Schuster\",\n  \"last_contacted_on\": \"2026-05-05\",\n  \"next_follow_up_on\": \"2026-05-26\",\n  \"notes\": \"Procured through a referral from a port operations consultant who knew the team was drowning in manual exception tracking across vessel schedules, customs paperwork, and customer updates. John won the deal by mapping one messy dispatch workflow into a narrower phased rollout that felt operationally safe to the buyer. The pain is real, but urgency is only medium because they keep absorbing delays with overtime. Related note file: 01_notes/canalport-shipping.md\"\n}"
+      },
+      "result_preview": "OK",
+      "elapsed_ms": 129
+    },
+    {
+      "step": 6,
+      "tool": "write",
+      "params": {
+        "path": "reminders/rem_007.json",
+        "content": "{\n  \"id\": \"rem_007\",\n  \"account_id\": \"acct_007\",\n  \"contact_id\": \"cont_007\",\n  \"due_on\": \"2026-05-26\",\n  \"title\": \"Follow up with CanalPort Shipping\",\n  \"kind\": \"follow_up\",\n  \"status\": \"open\",\n  \"priority\": \"low\",\n  \"description\": \"Check pipeline health and confirm the next concrete step.\"\n}"
+      },
+      "result_preview": "OK",
+      "elapsed_ms": 145
+    },
+    {
+      "step": 7,
+      "tool": "answer",
+      "params": {
+        "message": "Updated the due date for the reminder associated with CanalPort Shipping. Both the account and reminder have been successfully updated with the new follow-up date of 2026-05-26.",
+        "outcome": "ok",
+        "refs": [
+          "accounts/acct_007.json",
+          "reminders/rem_007.json"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 137
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 18662,
+  "total_steps": 7,
+  "outcome": "ok",
+  "answer_message": "Updated the due date for the reminder associated with CanalPort Shipping. Both the account and reminder have been successfully updated with the new follow-up date of 2026-05-26.",
+  "score": 1
+}

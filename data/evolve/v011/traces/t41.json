@@ -1,25 +1,14 @@
 {
   "task_id": "t41",
   "prompt_version": "011",
-  "model": "qwen3:14b",
-  "instruction": "What date is in 16 days? Answer only YYYY-MM-DD",
-  "steps": [
-    {
-      "step": 1,
-      "tool": "answer",
-      "params": {
-        "message": "2026-04-07",
-        "outcome": "ok",
-        "refs": []
-      },
-      "result_preview": "",
-      "elapsed_ms": 120
-    }
+  "model": "gpt-4o-mini",
+  "instruction": "what day is in 17 days? Respond with DD-MM-YYYY only",
+  "steps": [],
+  "score_detail": [
+    "expected outcome OUTCOME_OK, got OUTCOME_ERR_INTERNAL"
   ],
-  "score_detail": [],
-  "total_elapsed_ms": 105649,
-  "total_steps": 1,
-  "outcome": "ok",
-  "answer_message": "2026-04-07",
-  "score": 1
+  "total_elapsed_ms": 650,
+  "total_steps": 0,
+  "error": "Exhausted step limit",
+  "score": 0
 }

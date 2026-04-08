@@ -1,0 +1,157 @@
+{
+  "task_id": "t12",
+  "prompt_version": "012",
+  "model": "gpt-4o-mini",
+  "instruction": "Send short follow-up email to Alex Meyer about next steps on the expansion. Keep the diff focused.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "search",
+      "params": {
+        "root": "contacts/",
+        "pattern": "Alex Meyer",
+        "limit": 1
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 126
+    },
+    {
+      "step": 3,
+      "tool": "list",
+      "params": {
+        "path": "contacts/"
+      },
+      "result_preview": "cont_001.json\ncont_002.json\ncont_003.json\ncont_004.json\ncont_005.json\ncont_006.json\ncont_007.json\ncont_008.json\ncont_009.json\ncont_010.json\nmgr_001.json\nmgr_002.json\nmgr_003.json\nREADME.MD",
+      "elapsed_ms": 141
+    },
+    {
+      "step": 4,
+      "tool": "search",
+      "params": {
+        "root": "contacts/",
+        "pattern": "Alex Meyer",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 125
+    },
+    {
+      "step": 5,
+      "tool": "search",
+      "params": {
+        "root": "contacts/",
+        "pattern": "Alex Meyer",
+        "limit": 10
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 121
+    },
+    {
+      "step": 6,
+      "tool": "search",
+      "params": {
+        "root": "01_notes/",
+        "pattern": "Alex Meyer",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 125
+    },
+    {
+      "step": 8,
+      "tool": "list",
+      "params": {
+        "path": "01_notes/"
+      },
+      "result_preview": "acme-logistics.md\nacme-robotics.md\naperture-ai-labs.md\nblue-harbor-bank.md\ncanalport-shipping.md\ngreengrid-energy.md\nhelios-tax-group.md\nnordlicht-health.md\nnorthstar-forecasting.md\nREADME.MD\nsilverline-retail.md",
+      "elapsed_ms": 121
+    },
+    {
+      "step": 9,
+      "tool": "search",
+      "params": {
+        "root": "01_notes/",
+        "pattern": "Alex Meyer",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 120
+    },
+    {
+      "step": 10,
+      "tool": "search",
+      "params": {
+        "root": "opportunities/",
+        "pattern": "Alex Meyer",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 124
+    },
+    {
+      "step": 12,
+      "tool": "list",
+      "params": {
+        "path": "opportunities/"
+      },
+      "result_preview": "opp_001.json\nopp_002.json\nopp_003.json\nopp_004.json\nopp_005.json\nopp_006.json\nopp_007.json\nopp_008.json\nopp_009.json\nopp_010.json\nREADME.MD",
+      "elapsed_ms": 127
+    },
+    {
+      "step": 13,
+      "tool": "search",
+      "params": {
+        "root": "opportunities/",
+        "pattern": "Alex Meyer",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 123
+    },
+    {
+      "step": 14,
+      "tool": "list",
+      "params": {
+        "path": "inbox/"
+      },
+      "result_preview": "README.md",
+      "elapsed_ms": 151
+    },
+    {
+      "step": 16,
+      "tool": "list",
+      "params": {
+        "path": "my-invoices/"
+      },
+      "result_preview": "INV-001-01.json\nINV-001-02.json\nINV-001-03.json\nINV-001-04.json\nINV-002-01.json\nINV-002-02.json\nINV-002-03.json\nINV-002-04.json\nINV-002-05.json\nINV-002-06.json\nINV-003-01.json\nINV-003-02.json\nINV-003-03.json\nINV-003-04.json\nINV-003-05.json\nINV-003-06.json\nINV-004-01.json\nINV-004-02.json\nINV-004-03.json\nINV-005-01.json\nINV-005-02.json\nINV-005-03.json\nINV-005-04.json\nINV-005-05.json\nINV-005-06.json\nINV-006-01.json\nINV-006-02.json\nINV-006-03.json\nINV-006-04.json\nINV-006-05.json\nINV-006-06.json\nINV-",
+      "elapsed_ms": 128
+    },
+    {
+      "step": 17,
+      "tool": "search",
+      "params": {
+        "root": "my-invoices/",
+        "pattern": "Alex Meyer",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 128
+    },
+    {
+      "step": 19,
+      "tool": "list",
+      "params": {
+        "path": "docs/"
+      },
+      "result_preview": "channels/\ninbox-msg-processing.md\ninbox-task-processing.md",
+      "elapsed_ms": 203
+    }
+  ],
+  "score_detail": [
+    "expected outcome OUTCOME_NONE_CLARIFICATION, got OUTCOME_ERR_INTERNAL"
+  ],
+  "total_elapsed_ms": 41564,
+  "total_steps": 14,
+  "error": "Exhausted step limit",
+  "score": 0
+}
