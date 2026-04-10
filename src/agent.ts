@@ -5,13 +5,12 @@ import {
 } from "@buf/bitgn_api.bufbuild_es/bitgn/vm/pcm_pb.js";
 import { createRuntimeClient, type RuntimeClient } from "./runtime.js";
 import { type ToolAction, TOOL_DEFINITIONS, TOOL_SCHEMA_MAP } from "./schemas.js";
-import type { ToolCallEntry } from "./llm.js";
 import { formatResult } from "./format.js";
 import { buildSystemPrompt } from "./prompt.js";
 import { callLLM, type LLMResponse, type ChatMessage } from "./llm.js";
 import type { TraceCollector } from "./trace.js";
 
-const MAX_STEPS = 30;
+const MAX_STEPS = 40;
 
 // Injection pattern scanner — detects common prompt injection attempts in content
 const INJECTION_PATTERNS = [
@@ -434,83 +433,79 @@ export async function runAgent(
       }
     }
 
-    // Fix move: ensure 'to' is a full file path, not a directory
+    // Guard: move target must be a full file path, not a directory
     if (job.action.tool === "move") {
       const fromBasename = job.action.from.split("/").pop() ?? "";
       const toBasename = job.action.to.split("/").pop() ?? "";
-      // If 'to' ends with '/' or 'to' basename has no extension while 'from' does, append filename
       const fromHasExt = fromBasename.includes(".");
       const toHasExt = toBasename.includes(".");
       if (job.action.to.endsWith("/") || (fromHasExt && !toHasExt && fromBasename)) {
         const separator = job.action.to.endsWith("/") ? "" : "/";
-        console.log(`\x1b[33mGUARD\x1b[0m: Normalizing move target: ${job.action.to} -> ${job.action.to}${separator}${fromBasename}`);
-        job.action.to = job.action.to + separator + fromBasename;
+        const correctedTo = job.action.to + separator + fromBasename;
+        console.log(`\x1b[33mGUARD\x1b[0m: Move target is directory-like: ${job.action.to}`);
+        pushRejection(`Error: your move target "${job.action.to}" appears to be a directory, not a file path. The "to" field must be a full file path including the filename. Did you mean "${correctedTo}"? Reissue the move with the correct target path.`);
+        continue;
       }
     }
 
-    // Guard: correct filenames for capture/distill directories to match inbox source (Change 30)
-    // When the task references an inbox file and the model writes to capture/distill,
-    // force the basename to match the inbox filename exactly
+    // Guard: capture/distill filenames must match inbox source
     if (job.action.tool === "write" && /^(01_capture|02_distill)\/.+/.test(job.action.path)) {
       const writeBasename = job.action.path.split("/").pop() ?? "";
-      // Don't fix template files
       if (!writeBasename.startsWith("_")) {
         const taskInboxMatch = taskText.match(/00_inbox\/([^\s,]+\.md)/);
         if (taskInboxMatch) {
           const inboxFile = taskInboxMatch[1];
           if (writeBasename !== inboxFile) {
-            const fixedPath = job.action.path.replace(writeBasename, inboxFile);
-            console.log(`\x1b[33mGUARD\x1b[0m: Correcting filename to match inbox: ${job.action.path} → ${fixedPath}`);
-            job.action.path = fixedPath;
+            const dir = job.action.path.substring(0, job.action.path.lastIndexOf("/"));
+            const correctedPath = `${dir}/${inboxFile}`;
+            console.log(`\x1b[33mGUARD\x1b[0m: Filename mismatch: ${job.action.path} should be ${correctedPath}`);
+            pushRejection(`Error: when writing to ${dir}/, the filename must match the inbox source file exactly. The task references "00_inbox/${inboxFile}", so your output file must be named "${inboxFile}", not "${writeBasename}". Rewrite to "${correctedPath}".`);
+            continue;
           }
         }
       }
     }
 
-    // Guard: thread must link to card — inject card reference if missing
+    // Guard: thread must link to card
     if (job.action.tool === "write" && /^02_distill\/threads\//.test(job.action.path) && !job.action.path.includes("_thread-template")) {
       const threadBasename = job.action.path.split("/").pop() ?? "";
       const cardPath = `02_distill/cards/${threadBasename}`;
       const relCardPath = `../cards/${threadBasename}`;
       if (!job.action.content.includes(cardPath) && !job.action.content.includes(relCardPath) && !job.action.content.includes("cards/")) {
-        console.log(`\x1b[33mGUARD\x1b[0m: Injecting card link into thread content`);
-        job.action.content += `\n\n## Related Cards\n- [${threadBasename}](${relCardPath})`;
+        console.log(`\x1b[33mGUARD\x1b[0m: Thread missing card link: ${job.action.path}`);
+        pushRejection(`Error: thread files in 02_distill/threads/ MUST include a link to their corresponding card in 02_distill/cards/. Your content for "${job.action.path}" is missing a card reference. Add a "## Related Cards" section with a link to "${relCardPath}". Rewrite the content with the card link included.`);
+        continue;
       }
     }
 
-    // Guard: invoice filename correction — ensure filename matches task invoice ID (fixes t10)
+    // Guard: invoice filename must match task invoice ID
     if (job.action.tool === "write" && /^my-invoices\//.test(job.action.path)) {
       const invoiceIdMatch = taskText.match(/invoice\s+([\w-]+)/i);
       if (invoiceIdMatch) {
         const expectedId = invoiceIdMatch[1];
         const expectedPath = `my-invoices/${expectedId}.json`;
         if (job.action.path !== expectedPath && !job.action.path.endsWith(`/${expectedId}.json`)) {
-          console.log(`\x1b[33mGUARD\x1b[0m: Fixing invoice filename: ${job.action.path} → ${expectedPath}`);
-          job.action.path = expectedPath;
+          console.log(`\x1b[33mGUARD\x1b[0m: Invoice filename mismatch: ${job.action.path} should be ${expectedPath}`);
+          pushRejection(`Error: the task references invoice "${expectedId}", so the file must be saved as "${expectedPath}", not "${job.action.path}". Fix the path and resubmit.`);
+          continue;
         }
       }
     }
 
     // Guard: enforce .json extension for structured data (invoices, accounts, contacts, etc.)
     if (job.action.tool === "write" && /^(my-invoices|invoices|accounts|contacts|reminders|opportunities)\//.test(job.action.path) && !job.action.path.endsWith(".json")) {
-      const fixedPath = job.action.path.replace(/\.\w+$/, ".json");
-      console.log(`\x1b[33mGUARD\x1b[0m: Fixing extension: ${job.action.path} → ${fixedPath}`);
-      job.action.path = fixedPath;
-      // If content isn't valid JSON, try to convert it
-      try {
-        JSON.parse(job.action.content);
-      } catch {
-        console.log(`\x1b[31mGUARD\x1b[0m: Content is not valid JSON for ${fixedPath} — blocking write, must use JSON format`);
-        pushRejection(`Error: files in ${fixedPath.split("/")[0]}/ MUST be valid JSON (not markdown or text). Rewrite the content as a JSON object. For invoices, use a structure like: {"id": "SR-13", "lines": [{"description": "...", "amount": 20}], ...}`);
-        continue;
-      }
+      const directory = job.action.path.split("/")[0];
+      const correctedPath = job.action.path.replace(/\.\w+$/, ".json");
+      console.log(`\x1b[33mGUARD\x1b[0m: Wrong extension: ${job.action.path}`);
+      pushRejection(`Error: files in ${directory}/ must use the .json extension. Change your path to "${correctedPath}" and ensure the content is valid JSON (not markdown or text).`);
+      continue;
     }
 
-    // Strip start_line/end_line on write when creating new files (prevent "file not found" errors)
+    // Guard: start_line/end_line on write causes errors for new files
     if (job.action.tool === "write" && (job.action.start_line != null || job.action.end_line != null)) {
-      console.log(`\x1b[33mGUARD\x1b[0m: Stripping start_line/end_line from write to ${job.action.path}`);
-      job.action.start_line = undefined;
-      job.action.end_line = undefined;
+      console.log(`\x1b[33mGUARD\x1b[0m: Write with start_line/end_line to ${job.action.path}`);
+      pushRejection(`Error: you included start_line/end_line in your write action for "${job.action.path}". These parameters cause errors when creating new files. Remove start_line and end_line and resubmit the write with the full content.`);
+      continue;
     }
 
     // Guard: date validation for rescheduling tasks (fixes t13)
@@ -527,14 +522,13 @@ export async function runAgent(
           const cheatMatch = dateCheatSheet.match(new RegExp(`${label.replace('+', '\\+')} = (\\d{4}-\\d{2}-\\d{2})`));
           if (cheatMatch) {
             const expectedDate = cheatMatch[1];
-            const dateFieldPattern = /("(?:due_on|next_follow_up_on|date|scheduled_date)":\s*")(\d{4}-\d{2}-\d{2})(")/g;
-            job.action.content = job.action.content.replace(dateFieldPattern, (match, prefix, date, suffix) => {
-              if (date !== expectedDate) {
-                console.log(`\x1b[33mGUARD\x1b[0m: Date correction: ${date} → ${expectedDate} (task says "${label.slice(1)}")`);
-                return prefix + expectedDate + suffix;
-              }
-              return match;
-            });
+            const dateFieldPattern = /("(?:due_on|next_follow_up_on|date|scheduled_date)":\s*")(\d{4}-\d{2}-\d{2})(")/;
+            const dateMatch = job.action.content.match(dateFieldPattern);
+            if (dateMatch && dateMatch[2] !== expectedDate) {
+              console.log(`\x1b[33mGUARD\x1b[0m: Date mismatch: ${dateMatch[2]} should be ${expectedDate}`);
+              pushRejection(`Error: the date in your content appears incorrect. The task says "${label.slice(1)}" and the current date is ${ctxTimeMatch![1]}. The correct target date is ${expectedDate}, but you wrote ${dateMatch[2]}. Fix the date field and resubmit.`);
+              continue;
+            }
           }
           break;
         }
@@ -591,24 +585,25 @@ export async function runAgent(
       continue;
     }
 
-    // Guard: fix seq.json content to be exactly {"id": lastSeqId + outboxEmailCount}
-    // The model may write "next" instead of "id", or use wrong values — always normalize
+    // Guard: seq.json content must be exactly {"id": lastSeqId + outboxEmailCount}
     if (job.action.tool === "write" && job.action.path === "outbox/seq.json" && lastSeqId != null) {
       const expectedNext = lastSeqId + Math.max(outboxEmailCount, 1);
       const correctContent = JSON.stringify({ id: expectedNext });
       if (job.action.content !== correctContent) {
-        console.log(`\x1b[33mGUARD\x1b[0m: Fixing seq.json content → ${correctContent}`);
-        job.action.content = correctContent;
+        console.log(`\x1b[33mGUARD\x1b[0m: seq.json content mismatch`);
+        pushRejection(`Error: seq.json must contain exactly ${correctContent}. The current seq id is ${lastSeqId} and you wrote ${outboxEmailCount} email(s), so next id = ${lastSeqId} + ${Math.max(outboxEmailCount, 1)} = ${expectedNext}. Fix the content and resubmit.`);
+        continue;
       }
     }
 
-    // Guard: fix outbox filename to match seq.json id (model sometimes adds 1 before writing)
-    if (job.action.tool === "write" && /^outbox\/\d+\.json$/.test(job.action.path) && lastSeqId != null) {
+    // Guard: outbox filename must match seq.json id
+    if (job.action.tool === "write" && /^outbox\/\d+\.json$/.test(job.action.path) && job.action.path !== "outbox/seq.json" && lastSeqId != null) {
       const writtenId = parseInt(job.action.path.match(/(\d+)\.json$/)![1], 10);
       const expectedFilename = lastSeqId + outboxEmailCount;
-      if (writtenId !== expectedFilename && writtenId === expectedFilename + 1) {
-        console.log(`\x1b[33mGUARD\x1b[0m: Fixing outbox filename: ${job.action.path} → outbox/${expectedFilename}.json`);
-        job.action.path = `outbox/${expectedFilename}.json`;
+      if (writtenId !== expectedFilename) {
+        console.log(`\x1b[33mGUARD\x1b[0m: Outbox filename mismatch: ${writtenId} should be ${expectedFilename}`);
+        pushRejection(`Error: the outbox email filename should be "outbox/${expectedFilename}.json" (seq.json id is ${lastSeqId}, this is email #${outboxEmailCount + 1}). You used "${job.action.path}". Fix the filename and resubmit.`);
+        continue;
       }
     }
 
@@ -657,13 +652,12 @@ export async function runAgent(
       } catch { /* fall through */ }
     }
 
-    // Guard: outbox email validation — validate "to" field, add sent:false, ensure valid JSON
-    if (job.action.tool === "write" && /^outbox\/\d+\.json$/.test(job.action.path)) {
+    // Guard: outbox email validation — validate "to" field, sent:false, invoice versions
+    if (job.action.tool === "write" && /^outbox\/\d+\.json$/.test(job.action.path) && job.action.path !== "outbox/seq.json") {
       let emailJson: Record<string, unknown> | null = null;
       try {
         emailJson = JSON.parse(job.action.content);
       } catch {
-        // Try to sanitize by removing literal newlines in strings, then re-parse
         const sanitized = job.action.content.replace(/[\n\r]+/g, " ");
         try { emailJson = JSON.parse(sanitized); } catch { /* give up */ }
       }
@@ -680,50 +674,40 @@ export async function runAgent(
             continue;
           }
         }
-        // Auto-add "sent": false field for outbox emails if not present
+        // Guard: outbox emails must include "sent": false
         if (emailJson.sent === undefined) {
-          emailJson.sent = false;
+          console.log(`\x1b[33mGUARD\x1b[0m: Outbox email missing "sent": false`);
+          pushRejection(`Error: outbox emails must include a "sent": false field. Add "sent": false to the JSON object and resubmit.`);
+          continue;
         }
-        // Guard: invoice attachment latest-version validation (Change 28)
-        // If email has attachments with invoices, ensure it's the latest version
+        // Guard: invoice attachment latest-version validation
         if (Array.isArray(emailJson.attachments)) {
-          const newAttachments: string[] = [];
           for (const att of emailJson.attachments as string[]) {
-            const invMatch = att.match(/^my-invoices\/(INV-\d+)-(\d+)\.json$/);
+            const invMatch = (att as string).match(/^my-invoices\/(INV-\d+)-(\d+)\.json$/);
             if (invMatch) {
               const prefix = invMatch[1];
               try {
                 const listResult = await dispatch(vm, { tool: "list", path: "my-invoices" } as ToolAction);
                 const listTxt = formatResult({ tool: "list", path: "my-invoices" } as ToolAction, listResult);
-                // Find all versions of this invoice
                 const versions = [...listTxt.matchAll(new RegExp(`(${prefix}-(\\d+)\\.json)`, "g"))];
                 if (versions.length > 0) {
-                  // Get the latest version (highest number)
                   let latestFile = versions[0][1];
                   let latestNum = parseInt(versions[0][2], 10);
                   for (const v of versions) {
                     const num = parseInt(v[2], 10);
-                    if (num > latestNum) {
-                      latestNum = num;
-                      latestFile = v[1];
-                    }
+                    if (num > latestNum) { latestNum = num; latestFile = v[1]; }
                   }
                   const latestPath = `my-invoices/${latestFile}`;
                   if (latestPath !== att) {
-                    console.log(`\x1b[33mGUARD\x1b[0m: Swapping invoice attachment: ${att} → ${latestPath}`);
-                    readPaths.add(latestPath);
+                    console.log(`\x1b[33mGUARD\x1b[0m: Invoice attachment not latest: ${att} → ${latestPath}`);
+                    pushRejection(`Error: the invoice attachment "${att}" is not the latest version. The latest version is "${latestPath}". Update your attachments array to use "${latestPath}" and resubmit.`);
+                    continue;
                   }
-                  newAttachments.push(latestPath);
-                  continue;
                 }
               } catch { /* fall through */ }
             }
-            newAttachments.push(att);
           }
-          emailJson.attachments = newAttachments;
         }
-        // Always re-serialize to ensure valid JSON
-        job.action.content = JSON.stringify(emailJson, null, 2);
       }
     }
 
@@ -802,9 +786,9 @@ export async function runAgent(
     if (job.action.tool === "answer" && job.action.outcome === "ok" && !hasMutated) {
       const externalSystemMatch = taskText.match(/\b(salesforce|hubspot|slack|jira|asana|trello|notion|google\s*docs|microsoft\s*teams|crm\s*sync)\b/i);
       if (externalSystemMatch) {
-        console.log(`\x1b[33mGUARD\x1b[0m: External system "${externalSystemMatch[1]}" → none_unsupported`);
-        job.action.outcome = "none_unsupported";
-        job.action.message = `Cannot perform ${externalSystemMatch[1]} operations — this capability is beyond the vault file tools.`;
+        console.log(`\x1b[33mGUARD\x1b[0m: External system "${externalSystemMatch[1]}" referenced`);
+        pushRejection(`Error: the task references "${externalSystemMatch[1]}" which is an external system not accessible from this vault. You cannot claim "ok" for operations that require external systems. Use outcome "none_unsupported" to indicate this capability is not available.`);
+        continue;
       }
     }
 
@@ -855,11 +839,10 @@ export async function runAgent(
     }
 
     // Guard: inbox checklist → none_clarification (fixes t21)
-    // If the model reads inbox/inbox.md or README.md and answers "ok" without processing real messages, redirect
     if (job.action.tool === "answer" && job.action.outcome === "ok" && readInboxChecklist && !hasMutated && ![...readPaths].some(p => /^inbox\/msg_/.test(p))) {
-      console.log(`\x1b[33mGUARD\x1b[0m: Redirecting "ok" to "none_clarification" — inbox checklist without actionable items`);
-      job.action.outcome = "none_clarification";
-      job.action.message = "Inbox contains only checklist items without clear recipients or actionable vault operations.";
+      console.log(`\x1b[33mGUARD\x1b[0m: Inbox checklist with no actionable items`);
+      pushRejection(`Error: you read an inbox checklist file but found no actionable vault operations (no real inbox messages processed). Inbox checklists without clear recipients or actionable file operations should use outcome "none_clarification", not "ok". Resubmit with the correct outcome.`);
+      continue;
     }
 
     // Guard: outbox email and seq.json must both be written
@@ -991,13 +974,13 @@ export async function runAgent(
           continue;
         }
         // Model searched broadly enough — redirect to none_clarification
-        console.log(`\x1b[33mGUARD\x1b[0m: Redirecting "ok" with negative message to "none_clarification"`);
-        job.action.outcome = "none_clarification";
+        console.log(`\x1b[33mGUARD\x1b[0m: Negative message after broad search`);
+        pushRejection(`Error: your answer says the information was not found, which indicates the data doesn't exist in the vault. When you've searched thoroughly and the data doesn't exist, use outcome "none_clarification", not "ok". Resubmit with the correct outcome.`);
+        continue;
       }
     }
 
-    // Guard: programmatic counting for counting queries (fixes t30)
-    // Handles both: model gives wrong count (ok) or gives up entirely (none_clarification)
+    // Guard: programmatic counting verification for counting queries (fixes t30)
     if (job.action.tool === "answer" && (job.action.outcome === "ok" || job.action.outcome === "none_clarification") && /how many|count|number of/i.test(taskText)) {
       const countKeywords = ["blacklist", "verified", "valid", "admin", "active", "inactive", "banned", "blocked"];
       const taskLower = taskText.toLowerCase();
@@ -1017,95 +1000,79 @@ export async function runAgent(
           } as ToolAction, searchResult);
 
           if (!searchTxt.includes("(no matches)")) {
-            // Count lines from the specific channel file
             const lines = searchTxt.split("\n").filter(l => l.startsWith(countFile + ":"));
             const programmaticCount = lines.length;
             if (programmaticCount > 0) {
-              // Check if model had a count and it differs
               const answerNumMatch = job.action.message.match(/\b(\d+)\b/);
-              if (answerNumMatch) {
-                const modelCount = parseInt(answerNumMatch[1], 10);
-                if (modelCount !== programmaticCount) {
-                  console.log(`\x1b[33mGUARD\x1b[0m: Counting correction: model=${modelCount}, programmatic=${programmaticCount}`);
-                  job.action.message = job.action.message.replace(String(modelCount), String(programmaticCount));
-                }
-              } else {
-                // Model didn't have a count (gave up) — set the count
-                console.log(`\x1b[33mGUARD\x1b[0m: Programmatic count: ${programmaticCount}`);
-                job.action.message = String(programmaticCount);
+              const modelCount = answerNumMatch ? parseInt(answerNumMatch[1], 10) : null;
+              if (modelCount !== programmaticCount) {
+                console.log(`\x1b[33mGUARD\x1b[0m: Counting mismatch: model=${modelCount}, actual=${programmaticCount}`);
+                pushRejection(`Error: your count of ${modelCount ?? "(none)"} for "${countWord}" entries in ${countFile} is incorrect. A programmatic search found ${programmaticCount} matching lines. The correct count is ${programmaticCount}. Resubmit your answer with the corrected number.${/only.*number|just.*number|answer.*number/i.test(taskText) ? " The task asks for ONLY the number — your message should be just the number." : ""}`);
+                readPaths.add(countFile);
+                hasInteractedWithVault = true;
+                continue;
               }
-              // If task asks for just the number, set message to exactly the count
-              if (/only.*number|just.*number|answer.*number/i.test(taskText)) {
-                job.action.message = String(programmaticCount);
-              }
-              // Ensure outcome is ok
-              job.action.outcome = "ok";
+              // Count is correct — ensure refs include the file
               if (!job.action.refs.includes(countFile)) job.action.refs.push(countFile);
               readPaths.add(countFile);
               hasInteractedWithVault = true;
+              if (job.action.outcome === "none_clarification") {
+                job.action.outcome = "ok";
+              }
             }
           }
         } catch { /* fall through */ }
       }
     }
 
-    // Guard: precision for "return only the X" tasks (fixes t39) + alphabetical sort (fixes t40)
+    // Guard: precision for "return only the X" tasks (fixes t39) + format validation (fixes t40)
     if (job.action.tool === "answer" && job.action.outcome === "ok" && isReadOnlyQuery) {
       const msg = job.action.message ?? "";
-      // "return only the email" / "only the email address"
+      let precisionError = "";
+
       if (/only\s+the\s+email/i.test(taskText)) {
         const emailMatch = msg.match(/[\w.+-]+@[\w.-]+\.\w{2,}/);
         if (emailMatch && msg.length > emailMatch[0].length + 5) {
-          console.log(`\x1b[33mGUARD\x1b[0m: Precision — stripping to email only: ${emailMatch[0]}`);
-          job.action.message = emailMatch[0];
+          precisionError = `The task asks for ONLY the email address. Your answer includes extra text. Resubmit with just the email address "${emailMatch[0]}", nothing else.`;
         }
-      }
-      // "DD-MM-YYYY only" / "respond with DD-MM-YYYY" — date format precision
-      if (/DD-MM-YYYY/i.test(taskText)) {
+      } else if (/DD-MM-YYYY/i.test(taskText)) {
         const dateMatch = msg.match(/\b(\d{2}-\d{2}-\d{4})\b/);
         if (dateMatch && msg.length > dateMatch[0].length + 5) {
-          console.log(`\x1b[33mGUARD\x1b[0m: Precision — stripping to DD-MM-YYYY date: ${dateMatch[0]}`);
-          job.action.message = dateMatch[0];
+          precisionError = `The task asks for the date in DD-MM-YYYY format only. Your answer includes extra text. Resubmit with just the date "${dateMatch[0]}", nothing else.`;
         }
-      }
-      // "YYYY-MM-DD only" — ISO date format precision
-      if (/YYYY-MM-DD/i.test(taskText)) {
+      } else if (/YYYY-MM-DD/i.test(taskText)) {
         const dateMatch = msg.match(/\b(\d{4}-\d{2}-\d{2})\b/);
         if (dateMatch && msg.length > dateMatch[0].length + 5) {
-          console.log(`\x1b[33mGUARD\x1b[0m: Precision — stripping to YYYY-MM-DD date: ${dateMatch[0]}`);
-          job.action.message = dateMatch[0];
+          precisionError = `The task asks for the date in YYYY-MM-DD format only. Your answer includes extra text. Resubmit with just the date "${dateMatch[0]}", nothing else.`;
         }
-      }
-      // "return only the number" / "answer with just the number"
-      if (/only\s+the\s+number|just\s+the\s+number|answer\s+.*\s+number/i.test(taskText)) {
+      } else if (/only\s+the\s+number|just\s+the\s+number|answer\s+.*\s+number/i.test(taskText)) {
         const numMatch = msg.match(/\b\d+\b/);
         if (numMatch && msg.length > numMatch[0].length + 5) {
-          console.log(`\x1b[33mGUARD\x1b[0m: Precision — stripping to number only: ${numMatch[0]}`);
-          job.action.message = numMatch[0];
+          precisionError = `The task asks for ONLY the number. Your answer includes extra text. Resubmit with just the number "${numMatch[0]}", nothing else.`;
         }
       }
-      // "sorted alphabetically" — sort multi-line answers
+
       if (/sorted?\s+alphabetically/i.test(taskText)) {
         const lines = msg.split("\n").map(l => l.trim()).filter(l => l.length > 0);
         if (lines.length > 1) {
           const sorted = [...lines].sort((a, b) => a.localeCompare(b));
           if (lines.join("\n") !== sorted.join("\n")) {
-            console.log(`\x1b[33mGUARD\x1b[0m: Sorting answer alphabetically`);
-            job.action.message = sorted.join("\n");
+            precisionError = `The task asks for results sorted alphabetically. Your answer is not in alphabetical order. Resubmit with the items sorted A-Z.`;
           }
         }
       }
-      // "return only the account names" / "only the names" — strip prose
+
       if (/only\s+the\s+(account\s+)?names?\b/i.test(taskText) && /one\s+per\s+line/i.test(taskText)) {
         const lines = msg.split("\n").map(l => l.trim()).filter(l => l.length > 0);
-        // If first line looks like prose (starts with lowercase or contains "here are"), strip it
         if (lines.length > 1 && /^(here|the|i |these)/i.test(lines[0])) {
-          const dataLines = lines.filter(l => !/^(here|the |i |these|account)/i.test(l) && l.length > 2);
-          if (dataLines.length > 0) {
-            console.log(`\x1b[33mGUARD\x1b[0m: Stripping prose from multi-line answer`);
-            job.action.message = dataLines.join("\n");
-          }
+          precisionError = `The task asks for ONLY the names, one per line. Your answer includes prose/explanation. Resubmit with just the names, one per line, no extra text.`;
         }
+      }
+
+      if (precisionError) {
+        console.log(`\x1b[33mGUARD\x1b[0m: Precision issue in answer`);
+        pushRejection(`Error: ${precisionError}`);
+        continue;
       }
     }
 
