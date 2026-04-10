@@ -2,7 +2,7 @@
   "task_id": "t42",
   "prompt_version": "012",
   "model": "gpt-4o-mini",
-  "instruction": "which captured article is from 21 days ago?",
+  "instruction": "Which article did I capture 19 days ago?",
   "steps": [
     {
       "step": 1,
@@ -10,77 +10,232 @@
       "params": {
         "root": "00_inbox/",
         "pattern": "2026-03-06",
-        "limit": 5
+        "limit": 20
       },
       "result_preview": "(no matches)",
-      "elapsed_ms": 121
+      "elapsed_ms": 118
     },
     {
       "step": 2,
       "tool": "search",
       "params": {
         "root": "00_inbox/",
-        "pattern": "2026-03-0",
-        "limit": 5
+        "pattern": "2026-03-05",
+        "limit": 20
       },
       "result_preview": "(no matches)",
-      "elapsed_ms": 129
+      "elapsed_ms": 202
     },
     {
       "step": 3,
-      "tool": "list",
+      "tool": "search",
       "params": {
-        "path": "00_inbox/"
+        "root": "00_inbox/",
+        "pattern": "2026-03-07",
+        "limit": 20
       },
-      "result_preview": "2026-03-23__hn-agent-kernel-stateful-agents.md\n2026-03-23__hn-reports-of-codes-death.md\n2026-03-23__hn-vibe-coding-spam.md\n2026-03-23__hn-walmart-chatgpt-checkout.md",
-      "elapsed_ms": 124
+      "result_preview": "(no matches)",
+      "elapsed_ms": 112
+    },
+    {
+      "step": 4,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "2026-03-08",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 117
     },
     {
       "step": 5,
-      "tool": "list",
+      "tool": "search",
       "params": {
-        "path": "01_capture/"
+        "root": "00_inbox/",
+        "pattern": "2026-03-09",
+        "limit": 20
       },
-      "result_preview": "influential/",
-      "elapsed_ms": 123
+      "result_preview": "(no matches)",
+      "elapsed_ms": 117
     },
     {
       "step": 6,
-      "tool": "list",
+      "tool": "search",
       "params": {
-        "path": "01_capture/influential/"
+        "root": "00_inbox/",
+        "pattern": "2026-03-10",
+        "limit": 20
       },
-      "result_preview": "2026-02-10__how-i-use-claude-code.md\n2026-02-15__openai-harness-engineering.md\n2026-03-06__anthropic-biology-of-llms.md\n2026-03-17__intercom-claude-code-platform.md\n2026-03-23__hn-structured-outputs-practical-notes.md",
-      "elapsed_ms": 122
+      "result_preview": "(no matches)",
+      "elapsed_ms": 113
     },
     {
       "step": 7,
-      "tool": "list",
+      "tool": "search",
       "params": {
-        "path": "02_distill/cards/"
+        "root": "00_inbox/",
+        "pattern": "2026-03-11",
+        "limit": 20
       },
-      "result_preview": "2026-02-10__how-i-use-claude-code.md\n2026-02-15__openai-harness-engineering.md\n2026-03-06__anthropic-biology-of-llms.md\n2026-03-17__intercom-claude-code-platform.md\n2026-03-23__hn-structured-outputs-practical-notes.md\n_card-template.md",
-      "elapsed_ms": 129
+      "result_preview": "(no matches)",
+      "elapsed_ms": 121
     },
     {
       "step": 8,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "2026-03-12",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 117
+    },
+    {
+      "step": 9,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "2026-03-13",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 121
+    },
+    {
+      "step": 10,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "2026-03-14",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 118
+    },
+    {
+      "step": 11,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "2026-03-15",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 120
+    },
+    {
+      "step": 12,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "2026-03-16",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 120
+    },
+    {
+      "step": 13,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "2026-03-17",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 114
+    },
+    {
+      "step": 14,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "2026-03-18",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 120
+    },
+    {
+      "step": 15,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "2026-03-19",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 118
+    },
+    {
+      "step": 16,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "2026-03-20",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 116
+    },
+    {
+      "step": 17,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "2026-03-21",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 119
+    },
+    {
+      "step": 18,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "2026-03-22",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 120
+    },
+    {
+      "step": 19,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "2026-03-23",
+        "limit": 20
+      },
+      "result_preview": "00_inbox/2026-03-23__hn-agent-kernel-stateful-agents.md:3:Captured on: 2026-03-23\n00_inbox/2026-03-23__hn-reports-of-codes-death.md:3:Captured on: 2026-03-23\n00_inbox/2026-03-23__hn-reports-of-codes-death.md:4:HN context: front-page story on Hacker News on 2026-03-23\n00_inbox/2026-03-23__hn-vibe-coding-spam.md:3:Captured on: 2026-03-23\n00_inbox/2026-03-23__hn-walmart-chatgpt-checkout.md:3:Captured on: 2026-03-23\n00_inbox/2026-03-23__hn-walmart-chatgpt-checkout.md:4:HN context: front-page story o",
+      "elapsed_ms": 116
+    },
+    {
+      "step": 20,
       "tool": "answer",
       "params": {
-        "message": "The captured article from 21 days ago is 'anthropic-biology-of-llms.md', found in both the 01_capture/influential/ directory and the 02_distill/cards/ directory.",
-        "outcome": "ok",
+        "message": "No articles were captured 19 days ago. The closest articles are from 2026-03-23, but none from 2026-03-06.",
+        "outcome": "none_clarification",
         "refs": [
-          "01_capture/influential/2026-03-06__anthropic-biology-of-llms.md",
-          "02_distill/cards/2026-03-06__anthropic-biology-of-llms.md"
+          "00_inbox/2026-03-23__hn-agent-kernel-stateful-agents.md",
+          "00_inbox/2026-03-23__hn-reports-of-codes-death.md",
+          "00_inbox/2026-03-23__hn-vibe-coding-spam.md",
+          "00_inbox/2026-03-23__hn-walmart-chatgpt-checkout.md"
         ]
       },
       "result_preview": "",
-      "elapsed_ms": 118
+      "elapsed_ms": 120
     }
   ],
-  "score_detail": [],
-  "total_elapsed_ms": 21474,
-  "total_steps": 7,
-  "outcome": "ok",
-  "answer_message": "The captured article from 21 days ago is 'anthropic-biology-of-llms.md', found in both the 01_capture/influential/ directory and the 02_distill/cards/ directory.",
-  "score": 1
+  "score_detail": [
+    "expected outcome OUTCOME_OK, got OUTCOME_NONE_CLARIFICATION"
+  ],
+  "total_elapsed_ms": 47683,
+  "total_steps": 20,
+  "outcome": "none_clarification",
+  "answer_message": "No articles were captured 19 days ago. The closest articles are from 2026-03-23, but none from 2026-03-06.",
+  "score": 0
 }

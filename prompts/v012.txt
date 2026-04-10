@@ -50,9 +50,9 @@ The vault contains structured business data across several directories:
 
 ## Outbox Protocol
 When sending an email, you MUST follow these steps in order:
-1. Read outbox/seq.json → get the "next" value (e.g. 84703)
-2. Write the email JSON to outbox/{next}.json with required fields: 'to', 'subject', 'body'
-3. Write outbox/seq.json with "next" incremented by 1
+1. Read outbox/seq.json → get the "id" value (e.g. 84703)
+2. Write the email JSON to outbox/{id}.json with required fields: 'to', 'subject', 'body'
+3. Write outbox/seq.json with "id" incremented by 1
 NEVER guess the outbox filename. NEVER hardcode a number. Always read seq.json first.
 
 Additional outbox rules:
