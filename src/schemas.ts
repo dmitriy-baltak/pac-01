@@ -89,61 +89,66 @@ export const ToolAction = z.discriminatedUnion("tool", [
   AnswerAction,
 ]);
 
-export const NextStep = z.object({
-  current_state: z.string(),
-  plan_remaining_steps_brief: z.array(z.string()),
-  task_completed: z.boolean(),
-  action: ToolAction,
-});
-
-export type NextStep = z.infer<typeof NextStep>;
 export type ToolAction = z.infer<typeof ToolAction>;
 
-export const NextStepJsonSchema = JSON.stringify(z.toJSONSchema(NextStep));
+// --- OpenAI native tool-calling definitions ---
 
-/**
- * Flat JSON Schema for --json-schema (no anyOf/oneOf — all tool params optional).
- * After SO decoding, we restructure into nested action + validate with Zod.
- */
-export const NextStepSoSchemaObj = {
-  type: "object",
-  properties: {
-    current_state: { type: "string" },
-    plan_remaining_steps_brief: { type: "array", items: { type: "string" } },
-    task_completed: { type: "boolean" },
-    action: {
-      type: "object",
-      properties: {
-        tool: { type: "string", enum: [
-          "read", "write", "delete", "mkdir", "move", "list",
-          "tree", "find", "search", "context", "answer",
-        ]},
-        path: { type: "string" },
-        content: { type: "string" },
-        number: { type: "boolean" },
-        start_line: { type: "integer" },
-        end_line: { type: "integer" },
-        from: { type: "string" },
-        to: { type: "string" },
-        root: { type: "string" },
-        level: { type: "integer" },
-        name: { type: "string" },
-        type: { type: "string", enum: ["all", "files", "dirs"] },
-        limit: { type: "integer" },
-        pattern: { type: "string" },
-        message: { type: "string" },
-        outcome: { type: "string", enum: [
-          "ok", "denied_security", "none_clarification",
-          "none_unsupported", "err_internal",
-        ]},
-        refs: { type: "array", items: { type: "string" } },
+export interface OpenAIToolDefinition {
+  type: "function";
+  function: {
+    name: string;
+    description: string;
+    parameters: Record<string, unknown>;
+  };
+}
+
+function zodToToolDef(
+  name: string,
+  description: string,
+  schema: z.ZodObject<z.ZodRawShape>,
+): OpenAIToolDefinition {
+  const jsonSchema = z.toJSONSchema(schema) as Record<string, unknown>;
+  const allProperties = (jsonSchema.properties ?? {}) as Record<string, unknown>;
+  const { tool: _tool, ...properties } = allProperties;
+  const required = ((jsonSchema.required as string[]) ?? []).filter((r) => r !== "tool");
+  return {
+    type: "function",
+    function: {
+      name,
+      description,
+      parameters: {
+        type: "object",
+        properties,
+        ...(required.length > 0 ? { required } : {}),
       },
-      required: ["tool"],
-      additionalProperties: false,
     },
-  },
-  required: ["current_state", "plan_remaining_steps_brief", "task_completed", "action"],
-  additionalProperties: false,
-} as const;
+  };
+}
 
-export const NextStepSoSchema = JSON.stringify(NextStepSoSchemaObj);
+export const TOOL_DEFINITIONS: OpenAIToolDefinition[] = [
+  zodToToolDef("read", "Read a file from the vault", ReadAction),
+  zodToToolDef("write", "Write content to a file in the vault", WriteAction),
+  zodToToolDef("delete", "Delete a file from the vault", DeleteAction),
+  zodToToolDef("mkdir", "Create a directory in the vault", MkDirAction),
+  zodToToolDef("move", "Move/rename a file in the vault", MoveAction),
+  zodToToolDef("list", "List files in a vault directory", ListAction),
+  zodToToolDef("tree", "Show directory tree of the vault", TreeAction),
+  zodToToolDef("find", "Find files by name pattern in the vault", FindAction),
+  zodToToolDef("search", "Search file contents by grep pattern in the vault", SearchAction),
+  zodToToolDef("context", "Get current vault context (time, metadata)", ContextAction),
+  zodToToolDef("answer", "Submit final answer for the task", AnswerAction),
+];
+
+export const TOOL_SCHEMA_MAP: Record<string, z.ZodType> = {
+  read: ReadAction,
+  write: WriteAction,
+  delete: DeleteAction,
+  mkdir: MkDirAction,
+  move: MoveAction,
+  list: ListAction,
+  tree: TreeAction,
+  find: FindAction,
+  search: SearchAction,
+  context: ContextAction,
+  answer: AnswerAction,
+};

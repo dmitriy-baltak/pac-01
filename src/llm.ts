@@ -1,93 +1,29 @@
-export interface ChatMessage {
-  role: "system" | "user" | "assistant";
-  content: string;
+import type { OpenAIToolDefinition } from "./schemas.js";
+
+export interface ToolCallEntry {
+  id: string;
+  type: "function";
+  function: { name: string; arguments: string };
 }
 
+export type ChatMessage =
+  | { role: "system"; content: string }
+  | { role: "user"; content: string }
+  | { role: "assistant"; content: string | null; tool_calls?: ToolCallEntry[] }
+  | { role: "tool"; content: string; tool_call_id: string };
+
 export interface LLMResponse {
-  result: string;
+  result: string | null;
+  tool_calls: ToolCallEntry[];
   duration_ms: number;
   total_cost_usd: number;
-  stop_reason: string; // "stop" | "max_tokens"
+  stop_reason: string; // "stop" | "tool_calls" | "max_tokens"
 }
 
 export interface LLMOptions {
-  format?: "json" | Record<string, unknown>;
+  tools?: OpenAIToolDefinition[];
+  tool_choice?: "auto" | "required" | "none";
   maxTokens?: number;
-}
-
-// --- Ollama ---
-
-const OLLAMA_HOST = process.env.OLLAMA_HOST ?? "http://localhost:11434";
-const OLLAMA_TIMEOUT_MS = 600_000; // 10 minutes — cold start can take 2-3 min to load 20GB into RAM
-
-interface OllamaResponse {
-  model: string;
-  message: { role: string; content: string };
-  done: boolean;
-  total_duration?: number; // nanoseconds
-  eval_count?: number;
-  done_reason?: string; // "stop" | "length"
-}
-
-function stripThinkTags(text: string): string {
-  return text.replace(/<think>[\s\S]*?<\/think>/g, "").trim();
-}
-
-async function callOllama(
-  model: string,
-  messages: ChatMessage[],
-  opts?: LLMOptions,
-): Promise<LLMResponse> {
-  const body = {
-    model,
-    messages,
-    stream: false,
-    ...(opts?.format ? { format: opts.format } : {}),
-    options: {
-      num_predict: opts?.maxTokens ?? 4096,
-      temperature: 0.6,
-      top_p: 0.95,
-    },
-  };
-
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), OLLAMA_TIMEOUT_MS);
-
-  let res: Response;
-  try {
-    res = await fetch(`${OLLAMA_HOST}/api/chat`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-      signal: controller.signal,
-    });
-  } catch (err) {
-    clearTimeout(timer);
-    if (err instanceof Error && err.name === "AbortError") {
-      throw new Error(`Ollama request timed out after ${OLLAMA_TIMEOUT_MS / 1000}s`);
-    }
-    throw new Error(
-      `Failed to connect to Ollama at ${OLLAMA_HOST}. Is Ollama running? Try: ollama serve`,
-    );
-  } finally {
-    clearTimeout(timer);
-  }
-
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(`Ollama returned ${res.status}: ${text.slice(0, 300)}`);
-  }
-
-  const data = (await res.json()) as OllamaResponse;
-  const content = stripThinkTags(data.message?.content ?? "");
-  const durationNs = data.total_duration ?? 0;
-
-  return {
-    result: content,
-    duration_ms: Math.round(durationNs / 1_000_000),
-    total_cost_usd: 0,
-    stop_reason: data.done_reason === "length" ? "max_tokens" : "stop",
-  };
 }
 
 // --- OpenAI ---
@@ -97,8 +33,12 @@ const OPENAI_TIMEOUT_MS = 120_000; // 2 minutes
 
 interface OpenAIResponse {
   choices: {
-    message: { role: string; content: string };
-    finish_reason: string; // "stop" | "length"
+    message: {
+      role: string;
+      content: string | null;
+      tool_calls?: ToolCallEntry[];
+    };
+    finish_reason: string; // "stop" | "tool_calls" | "length"
   }[];
   usage?: {
     prompt_tokens: number;
@@ -120,24 +60,19 @@ async function callOpenAI(
   opts?: LLMOptions,
 ): Promise<LLMResponse> {
   if (!OPENAI_API_KEY) {
-    throw new Error("OPENAI_API_KEY is required for GPT models. Set it in your environment.");
+    throw new Error("OPENAI_API_KEY is required. Set it in your environment.");
   }
 
   const body: Record<string, unknown> = {
     model,
     messages,
     temperature: 0.6,
-    max_tokens: opts?.maxTokens ?? 4096,
+    max_tokens: opts?.maxTokens ?? 8192,
   };
 
-  if (typeof opts?.format === "object" && opts?.format) {
-    // Use OpenAI structured outputs with the provided JSON schema
-    body.response_format = {
-      type: "json_schema",
-      json_schema: { name: "response", strict: false, schema: opts.format },
-    };
-  } else if (opts?.format === "json") {
-    body.response_format = { type: "json_object" };
+  if (opts?.tools?.length) {
+    body.tools = opts.tools;
+    body.tool_choice = opts?.tool_choice ?? "auto";
   }
 
   const controller = new AbortController();
@@ -181,26 +116,22 @@ async function callOpenAI(
   const cost = usage.prompt_tokens * pricing.input + usage.completion_tokens * pricing.output;
 
   return {
-    result: choice.message.content ?? "",
+    result: choice.message.content ?? null,
+    tool_calls: choice.message.tool_calls ?? [],
     duration_ms: Date.now() - start,
     total_cost_usd: cost,
-    stop_reason: choice.finish_reason === "length" ? "max_tokens" : "stop",
+    stop_reason: choice.finish_reason === "length" ? "max_tokens"
+      : choice.finish_reason === "tool_calls" ? "tool_calls"
+      : "stop",
   };
 }
 
 // --- Router ---
-
-function isOpenAIModel(model: string): boolean {
-  return model.startsWith("gpt-");
-}
 
 export async function callLLM(
   model: string,
   messages: ChatMessage[],
   opts?: LLMOptions,
 ): Promise<LLMResponse> {
-  if (isOpenAIModel(model)) {
-    return callOpenAI(model, messages, opts);
-  }
-  return callOllama(model, messages, opts);
+  return callOpenAI(model, messages, opts);
 }
