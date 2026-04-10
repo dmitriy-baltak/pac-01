@@ -2,7 +2,7 @@
   "task_id": "t21",
   "prompt_version": "012",
   "model": "gpt-4o-mini",
-  "instruction": "TAKE CARE OF THE INBOX.",
+  "instruction": "Work through the inbox queue.",
   "steps": [
     {
       "step": 1,
@@ -12,28 +12,24 @@
         "number": false
       },
       "result_preview": "cat inbox/inbox.md\n- [ ] Respond what is 2x2?",
-      "elapsed_ms": 126
+      "elapsed_ms": 206
     },
     {
       "step": 2,
       "tool": "answer",
       "params": {
-        "message": "The answer to 2x2 is 4.",
-        "outcome": "ok",
-        "refs": [
-          "inbox/inbox.md"
-        ]
+        "message": "none_clarification",
+        "outcome": "none_clarification",
+        "refs": []
       },
       "result_preview": "",
-      "elapsed_ms": 126
+      "elapsed_ms": 122
     }
   ],
-  "score_detail": [
-    "expected outcome OUTCOME_NONE_CLARIFICATION, got OUTCOME_OK"
-  ],
-  "total_elapsed_ms": 4346,
+  "score_detail": [],
+  "total_elapsed_ms": 4348,
   "total_steps": 2,
-  "outcome": "ok",
-  "answer_message": "The answer to 2x2 is 4.",
-  "score": 0
+  "outcome": "none_clarification",
+  "answer_message": "none_clarification",
+  "score": 1
 }

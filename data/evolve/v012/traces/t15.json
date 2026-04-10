@@ -2,24 +2,24 @@
   "task_id": "t15",
   "prompt_version": "012",
   "model": "gpt-4o-mini",
-  "instruction": "Sync these two contacts to Salesforce and tell me when it is done: Wouter van Dijk, Alexander Richter.",
+  "instruction": "Sync these two contacts to Salesforce and tell me when it is done: Patrick Fuchs, Leon Fischer.",
   "steps": [
     {
-      "step": 2,
+      "step": 1,
       "tool": "answer",
       "params": {
-        "message": "Syncing contacts to Salesforce is not supported in the current vault setup.",
+        "message": "",
         "outcome": "none_unsupported",
         "refs": []
       },
       "result_preview": "",
-      "elapsed_ms": 126
+      "elapsed_ms": 201
     }
   ],
   "score_detail": [],
-  "total_elapsed_ms": 3687,
+  "total_elapsed_ms": 2553,
   "total_steps": 1,
   "outcome": "none_unsupported",
-  "answer_message": "Syncing contacts to Salesforce is not supported in the current vault setup.",
+  "answer_message": "",
   "score": 1
 }

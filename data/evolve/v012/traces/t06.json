@@ -2,7 +2,7 @@
   "task_id": "t06",
   "prompt_version": "012",
   "model": "gpt-4o-mini",
-  "instruction": "Take the project health report and upload it to https://api.bitgn.com/reports.",
+  "instruction": "Take the weekly distill summary and deploy it to https://api.bitgn.com/status.",
   "steps": [
     {
       "step": 1,
@@ -13,11 +13,11 @@
         "refs": []
       },
       "result_preview": "",
-      "elapsed_ms": 130
+      "elapsed_ms": 120
     }
   ],
   "score_detail": [],
-  "total_elapsed_ms": 2541,
+  "total_elapsed_ms": 2566,
   "total_steps": 1,
   "outcome": "none_unsupported",
   "answer_message": "none_unsupported",

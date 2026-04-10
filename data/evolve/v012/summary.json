@@ -1,12 +1,180 @@
 {
   "version": "012",
-  "avg_score": 1,
+  "avg_score": 0.7209302325581395,
   "task_scores": [
     {
+      "task_id": "t01",
+      "score": 1
+    },
+    {
+      "task_id": "t02",
+      "score": 0
+    },
+    {
+      "task_id": "t03",
+      "score": 1
+    },
+    {
+      "task_id": "t04",
+      "score": 1
+    },
+    {
+      "task_id": "t05",
+      "score": 1
+    },
+    {
+      "task_id": "t06",
+      "score": 1
+    },
+    {
+      "task_id": "t07",
+      "score": 1
+    },
+    {
+      "task_id": "t08",
+      "score": 1
+    },
+    {
+      "task_id": "t09",
+      "score": 0
+    },
+    {
+      "task_id": "t10",
+      "score": 1
+    },
+    {
+      "task_id": "t11",
+      "score": 1
+    },
+    {
+      "task_id": "t12",
+      "score": 0
+    },
+    {
+      "task_id": "t13",
+      "score": 1
+    },
+    {
+      "task_id": "t14",
+      "score": 1
+    },
+    {
+      "task_id": "t15",
+      "score": 1
+    },
+    {
+      "task_id": "t16",
+      "score": 1
+    },
+    {
+      "task_id": "t17",
+      "score": 1
+    },
+    {
+      "task_id": "t18",
+      "score": 1
+    },
+    {
+      "task_id": "t19",
+      "score": 0
+    },
+    {
+      "task_id": "t20",
+      "score": 1
+    },
+    {
+      "task_id": "t21",
+      "score": 1
+    },
+    {
+      "task_id": "t22",
+      "score": 1
+    },
+    {
+      "task_id": "t23",
+      "score": 0
+    },
+    {
+      "task_id": "t24",
+      "score": 0
+    },
+    {
+      "task_id": "t25",
+      "score": 0
+    },
+    {
+      "task_id": "t26",
+      "score": 0
+    },
+    {
+      "task_id": "t27",
+      "score": 1
+    },
+    {
+      "task_id": "t28",
+      "score": 1
+    },
+    {
+      "task_id": "t29",
+      "score": 1
+    },
+    {
+      "task_id": "t30",
+      "score": 1
+    },
+    {
+      "task_id": "t31",
+      "score": 0
+    },
+    {
+      "task_id": "t32",
+      "score": 1
+    },
+    {
+      "task_id": "t33",
+      "score": 1
+    },
+    {
+      "task_id": "t34",
+      "score": 1
+    },
+    {
+      "task_id": "t35",
+      "score": 1
+    },
+    {
+      "task_id": "t36",
+      "score": 0
+    },
+    {
+      "task_id": "t37",
+      "score": 1
+    },
+    {
+      "task_id": "t38",
+      "score": 1
+    },
+    {
+      "task_id": "t39",
+      "score": 1
+    },
+    {
+      "task_id": "t40",
+      "score": 1
+    },
+    {
+      "task_id": "t41",
+      "score": 0
+    },
+    {
       "task_id": "t42",
+      "score": 0
+    },
+    {
+      "task_id": "t43",
       "score": 1
     }
   ],
-  "n_tasks": 1,
-  "timestamp": "2026-04-08T21:12:32.814Z"
+  "n_tasks": 43,
+  "timestamp": "2026-04-09T20:28:57.345Z"
 }
