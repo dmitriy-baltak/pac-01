@@ -1,0 +1,48 @@
+{
+  "version": "013",
+  "avg_score": 0.9,
+  "task_scores": [
+    {
+      "task_id": "t01",
+      "score": 1
+    },
+    {
+      "task_id": "t02",
+      "score": 1
+    },
+    {
+      "task_id": "t03",
+      "score": 1
+    },
+    {
+      "task_id": "t04",
+      "score": 1
+    },
+    {
+      "task_id": "t05",
+      "score": 1
+    },
+    {
+      "task_id": "t06",
+      "score": 1
+    },
+    {
+      "task_id": "t07",
+      "score": 1
+    },
+    {
+      "task_id": "t08",
+      "score": 1
+    },
+    {
+      "task_id": "t09",
+      "score": 0
+    },
+    {
+      "task_id": "t10",
+      "score": 1
+    }
+  ],
+  "n_tasks": 10,
+  "timestamp": "2026-04-10T19:02:09.285Z"
+}
