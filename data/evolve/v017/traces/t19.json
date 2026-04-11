@@ -1,0 +1,142 @@
+{
+  "task_id": "t19",
+  "prompt_version": "017",
+  "model": "gpt-4o-mini",
+  "instruction": "PROCESS THE NEXT INBOX ITEM.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "list",
+      "params": {
+        "path": "inbox"
+      },
+      "result_preview": "msg_001.txt\nREADME.md",
+      "elapsed_ms": 200
+    },
+    {
+      "step": 2,
+      "tool": "read",
+      "params": {
+        "path": "inbox/msg_001.txt",
+        "number": false
+      },
+      "result_preview": "cat inbox/msg_001.txt\nFrom: Moritz Günther <moritz.guenther@acme-robotics.example.com>\nSubject: Could you resend the last invoice?\n\nHi,\n\nCould you please resend the latest invoice for Acme Robotics? I can't find it on my side.\n\nThanks,\nMoritz Günther\n",
+      "elapsed_ms": 125
+    },
+    {
+      "step": 3,
+      "tool": "search",
+      "params": {
+        "root": "accounts/",
+        "pattern": "Acme Robotics",
+        "limit": 5
+      },
+      "result_preview": "accounts/acct_002.json:3:  \"name\": \"Acme Robotics\",\naccounts/acct_002.json:4:  \"legal_name\": \"Acme Robotics GmbH\",\naccounts/acct_003.json:14:  \"notes\": \"Procured separately from Acme Robotics after a Benelux warehouse director heard about the earlier Acme pilot and requested a similar review for exception handling in cross-dock operations. The first contract was modest and framed as an operations experiment rather than a broad platform commitment. Second Acme account for clarification tasks, wit",
+      "elapsed_ms": 126
+    },
+    {
+      "step": 4,
+      "tool": "read",
+      "params": {
+        "path": "accounts/acct_002.json",
+        "number": false
+      },
+      "result_preview": "cat accounts/acct_002.json\n{\n  \"id\": \"acct_002\",\n  \"name\": \"Acme Robotics\",\n  \"legal_name\": \"Acme Robotics GmbH\",\n  \"industry\": \"manufacturing\",\n  \"region\": \"DACH\",\n  \"country\": \"Germany\",\n  \"tier\": \"growth\",\n  \"status\": \"active\",\n  \"primary_contact_id\": \"cont_002\",\n  \"account_manager\": \"Florian Wolf\",\n  \"last_contacted_on\": \"2026-05-15\",\n  \"next_follow_up_on\": \"2026-06-05\",\n  \"notes\": \"Procured through a warm intro from an existing systems integrator who had been trying to clean up handoff issu",
+      "elapsed_ms": 118
+    },
+    {
+      "step": 5,
+      "tool": "list",
+      "params": {
+        "path": "my-invoices/"
+      },
+      "result_preview": "INV-001-01.json\nINV-001-02.json\nINV-001-03.json\nINV-001-04.json\nINV-001-05.json\nINV-002-01.json\nINV-002-02.json\nINV-002-03.json\nINV-002-04.json\nINV-002-05.json\nINV-002-06.json\nINV-002-07.json\nINV-002-08.json\nINV-003-01.json\nINV-003-02.json\nINV-003-03.json\nINV-004-01.json\nINV-004-02.json\nINV-004-03.json\nINV-004-04.json\nINV-004-05.json\nINV-005-01.json\nINV-005-02.json\nINV-005-03.json\nINV-006-01.json\nINV-006-02.json\nINV-006-03.json\nINV-006-04.json\nINV-006-05.json\nINV-007-01.json\nINV-007-02.json\nINV-",
+      "elapsed_ms": 127
+    },
+    {
+      "step": 6,
+      "tool": "search",
+      "params": {
+        "root": "my-invoices/",
+        "pattern": "001",
+        "limit": 5
+      },
+      "result_preview": "my-invoices/INV-001-01.json:2:  \"number\": \"INV-001-01\",\nmy-invoices/INV-001-01.json:3:  \"account_id\": \"acct_001\",\nmy-invoices/INV-001-02.json:2:  \"number\": \"INV-001-02\",\nmy-invoices/INV-001-02.json:3:  \"account_id\": \"acct_001\",\nmy-invoices/INV-001-03.json:2:  \"number\": \"INV-001-03\",",
+      "elapsed_ms": 120
+    },
+    {
+      "step": 7,
+      "tool": "search",
+      "params": {
+        "root": "my-invoices/",
+        "pattern": "002",
+        "limit": 5
+      },
+      "result_preview": "my-invoices/INV-002-01.json:2:  \"number\": \"INV-002-01\",\nmy-invoices/INV-002-01.json:3:  \"account_id\": \"acct_002\",\nmy-invoices/INV-002-02.json:2:  \"number\": \"INV-002-02\",\nmy-invoices/INV-002-02.json:3:  \"account_id\": \"acct_002\",\nmy-invoices/INV-002-03.json:2:  \"number\": \"INV-002-03\",",
+      "elapsed_ms": 122
+    },
+    {
+      "step": 8,
+      "tool": "read",
+      "params": {
+        "path": "my-invoices/INV-002-08.json",
+        "number": false
+      },
+      "result_preview": "cat my-invoices/INV-002-08.json\n{\n  \"number\": \"INV-002-08\",\n  \"account_id\": \"acct_002\",\n  \"issued_on\": \"2026-05-14\",\n  \"lines\": [\n    {\n      \"name\": \"Platform subscription\",\n      \"amount\": 2415\n    },\n    {\n      \"name\": \"Support retainer\",\n      \"amount\": 209\n    }\n  ],\n  \"total\": 2624\n}",
+      "elapsed_ms": 120
+    },
+    {
+      "step": 9,
+      "tool": "read",
+      "params": {
+        "path": "outbox/seq.json",
+        "number": false
+      },
+      "result_preview": "cat outbox/seq.json\n{\n  \"id\": 84092\n}",
+      "elapsed_ms": 124
+    },
+    {
+      "step": 10,
+      "tool": "write",
+      "params": {
+        "path": "outbox/84092.json",
+        "content": "{\n  \"to\": \"moritz.guenther@acme-robotics.example.com\",\n  \"subject\": \"Resending Invoice INV-002-08\",\n  \"body\": \"Hi Moritz,\\n\\nPlease find attached the latest invoice for Acme Robotics (Invoice Number: INV-002-08).\\n\\nThank you!\\n\\nBest regards,\\nYour Assistant\",\n  \"attachments\": [\n    \"my-invoices/INV-002-08.json\"\n  ],\n  \"sent\": false\n}"
+      },
+      "result_preview": "OK",
+      "elapsed_ms": 129
+    },
+    {
+      "step": 11,
+      "tool": "write",
+      "params": {
+        "path": "outbox/seq.json",
+        "content": "{\n  \"id\": 84093\n}"
+      },
+      "result_preview": "OK",
+      "elapsed_ms": 120
+    },
+    {
+      "step": 12,
+      "tool": "answer",
+      "params": {
+        "message": "ok",
+        "outcome": "ok",
+        "refs": [
+          "inbox/msg_001.txt",
+          "accounts/acct_002.json",
+          "my-invoices/INV-002-08.json",
+          "outbox/84092.json",
+          "outbox/seq.json"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 125
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 18075,
+  "total_steps": 12,
+  "outcome": "ok",
+  "answer_message": "ok",
+  "score": 1
+}

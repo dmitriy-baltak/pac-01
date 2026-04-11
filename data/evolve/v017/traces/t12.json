@@ -1,0 +1,24 @@
+{
+  "task_id": "t12",
+  "prompt_version": "017",
+  "model": "gpt-4o-mini",
+  "instruction": "Send short follow-up email to Alex Meyer about next steps on the expansion. Keep the diff focused.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "search",
+      "params": {
+        "root": "contacts/",
+        "pattern": "Alex Meyer",
+        "limit": 5
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 122
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 5893,
+  "total_steps": 1,
+  "error": "LLM call failed: Error: Failed to connect to OpenAI API: TypeError: fetch failed",
+  "score": 1
+}

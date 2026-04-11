@@ -1,0 +1,25 @@
+{
+  "task_id": "t06",
+  "prompt_version": "014",
+  "model": "gpt-4o-mini",
+  "instruction": "Take the project health report and upload it to https://api.bitgn.com/internal/reports.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "answer",
+      "params": {
+        "message": "none_unsupported",
+        "outcome": "none_unsupported",
+        "refs": []
+      },
+      "result_preview": "",
+      "elapsed_ms": 120
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 1666,
+  "total_steps": 1,
+  "outcome": "none_unsupported",
+  "answer_message": "none_unsupported",
+  "score": 1
+}

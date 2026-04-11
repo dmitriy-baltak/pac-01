@@ -67,6 +67,10 @@ export class TraceCollector {
     this.trace.error = error;
   }
 
+  hasError(): boolean {
+    return this.trace.error != null;
+  }
+
   finalize(): TaskTrace {
     this.trace.total_elapsed_ms = Date.now() - this.startTime;
     this.trace.total_steps = this.trace.steps.length;

@@ -1,0 +1,48 @@
+{
+  "task_id": "t34",
+  "prompt_version": "017",
+  "model": "gpt-4o-mini",
+  "instruction": "What is the exact legal name of the Benelux vessel-schedule logistics customer CanalPort account? Answer with the exact legal name only.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "search",
+      "params": {
+        "root": "accounts/",
+        "pattern": "CanalPort",
+        "limit": 20
+      },
+      "result_preview": "accounts/acct_007.json:3:  \"name\": \"CanalPort Shipping\",\naccounts/acct_007.json:4:  \"legal_name\": \"CanalPort Shipping B.V.\",",
+      "elapsed_ms": 124
+    },
+    {
+      "step": 2,
+      "tool": "read",
+      "params": {
+        "path": "accounts/acct_007.json",
+        "number": true
+      },
+      "result_preview": "cat accounts/acct_007.json\n     1\t{\n     2\t  \"id\": \"acct_007\",\n     3\t  \"name\": \"CanalPort Shipping\",\n     4\t  \"legal_name\": \"CanalPort Shipping B.V.\",\n     5\t  \"industry\": \"logistics\",\n     6\t  \"region\": \"Benelux\",\n     7\t  \"country\": \"Netherlands\",\n     8\t  \"tier\": \"core\",\n     9\t  \"status\": \"active\",\n    10\t  \"primary_contact_id\": \"cont_007\",\n    11\t  \"account_manager\": \"Theresa Lange\",\n    12\t  \"last_contacted_on\": \"2026-09-17\",\n    13\t  \"next_follow_up_on\": \"2026-10-24\",\n    14\t  \"notes\": \"",
+      "elapsed_ms": 144
+    },
+    {
+      "step": 3,
+      "tool": "answer",
+      "params": {
+        "message": "CanalPort Shipping B.V.",
+        "outcome": "ok",
+        "refs": [
+          "accounts/acct_007.json"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 123
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 3775,
+  "total_steps": 3,
+  "outcome": "ok",
+  "answer_message": "CanalPort Shipping B.V.",
+  "score": 1
+}

@@ -1,0 +1,48 @@
+{
+  "task_id": "t34",
+  "prompt_version": "016",
+  "model": "gpt-4o-mini",
+  "instruction": "What is the exact legal name of the Dutch forecasting consultancy Northstar account? Answer with the exact legal name only.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "search",
+      "params": {
+        "root": "accounts/",
+        "pattern": "Northstar",
+        "limit": 20
+      },
+      "result_preview": "accounts/acct_010.json:3:  \"name\": \"Northstar Forecasting\",\naccounts/acct_010.json:4:  \"legal_name\": \"Northstar Forecasting B.V.\",",
+      "elapsed_ms": 117
+    },
+    {
+      "step": 2,
+      "tool": "read",
+      "params": {
+        "path": "accounts/acct_010.json",
+        "number": false
+      },
+      "result_preview": "cat accounts/acct_010.json\n{\n  \"id\": \"acct_010\",\n  \"name\": \"Northstar Forecasting\",\n  \"legal_name\": \"Northstar Forecasting B.V.\",\n  \"industry\": \"professional_services\",\n  \"region\": \"Benelux\",\n  \"country\": \"Netherlands\",\n  \"tier\": \"growth\",\n  \"status\": \"active\",\n  \"primary_contact_id\": \"cont_010\",\n  \"account_manager\": \"Emma Weber\",\n  \"last_contacted_on\": \"2026-04-30\",\n  \"next_follow_up_on\": \"2026-05-25\",\n  \"notes\": \"Procured from a small forecasting workflow pilot after a regional consulting cont",
+      "elapsed_ms": 124
+    },
+    {
+      "step": 3,
+      "tool": "answer",
+      "params": {
+        "message": "Northstar Forecasting B.V.",
+        "outcome": "ok",
+        "refs": [
+          "accounts/acct_010.json"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 120
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 3948,
+  "total_steps": 3,
+  "outcome": "ok",
+  "answer_message": "Northstar Forecasting B.V.",
+  "score": 1
+}

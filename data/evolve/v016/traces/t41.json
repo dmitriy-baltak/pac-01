@@ -1,0 +1,22 @@
+{
+  "task_id": "t41",
+  "prompt_version": "016",
+  "model": "gpt-4o-mini",
+  "instruction": "What date is in 5 days? Answer only YYYY-MM-DD",
+  "steps": [
+    {
+      "step": 2,
+      "tool": "context",
+      "params": {},
+      "result_preview": "Current time: 2026-03-20T00:00:00Z",
+      "elapsed_ms": 123
+    }
+  ],
+  "score_detail": [
+    "expected outcome OUTCOME_OK, got OUTCOME_ERR_INTERNAL"
+  ],
+  "total_elapsed_ms": 9403,
+  "total_steps": 1,
+  "error": "LLM call failed: Error: Failed to connect to OpenAI API: TypeError: fetch failed",
+  "score": 0
+}

@@ -1,0 +1,60 @@
+{
+  "version": "016",
+  "avg_score": 0.6153846153846154,
+  "task_scores": [
+    {
+      "task_id": "t31",
+      "score": 0
+    },
+    {
+      "task_id": "t32",
+      "score": 0
+    },
+    {
+      "task_id": "t33",
+      "score": 1
+    },
+    {
+      "task_id": "t34",
+      "score": 1
+    },
+    {
+      "task_id": "t35",
+      "score": 1
+    },
+    {
+      "task_id": "t36",
+      "score": 0
+    },
+    {
+      "task_id": "t37",
+      "score": 1
+    },
+    {
+      "task_id": "t38",
+      "score": 1
+    },
+    {
+      "task_id": "t39",
+      "score": 0
+    },
+    {
+      "task_id": "t40",
+      "score": 1
+    },
+    {
+      "task_id": "t41",
+      "score": 0
+    },
+    {
+      "task_id": "t42",
+      "score": 1
+    },
+    {
+      "task_id": "t43",
+      "score": 1
+    }
+  ],
+  "n_tasks": 13,
+  "timestamp": "2026-04-10T21:56:59.327Z"
+}

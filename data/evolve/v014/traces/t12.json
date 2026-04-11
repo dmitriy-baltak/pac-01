@@ -1,0 +1,68 @@
+{
+  "task_id": "t12",
+  "prompt_version": "014",
+  "model": "gpt-4o-mini",
+  "instruction": "Send short follow-up email to Alex Meyer about next steps on the expansion. Keep the diff focused.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "search",
+      "params": {
+        "root": "contacts/",
+        "pattern": "Alex Meyer",
+        "limit": 1
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 124
+    },
+    {
+      "step": 2,
+      "tool": "search",
+      "params": {
+        "root": "contacts/",
+        "pattern": "Meyer",
+        "limit": 5
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 117
+    },
+    {
+      "step": 3,
+      "tool": "search",
+      "params": {
+        "root": "contacts/",
+        "pattern": "alex",
+        "limit": 5
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 123
+    },
+    {
+      "step": 4,
+      "tool": "search",
+      "params": {
+        "root": "contacts/",
+        "pattern": "ALEX",
+        "limit": 5
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 122
+    },
+    {
+      "step": 5,
+      "tool": "search",
+      "params": {
+        "root": "contacts/",
+        "pattern": "alex meyer",
+        "limit": 5
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 116
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 9220,
+  "total_steps": 5,
+  "error": "Exhausted step limit",
+  "score": 1
+}
