@@ -1,0 +1,47 @@
+{
+  "task_id": "t40",
+  "prompt_version": "017",
+  "model": "gpt-4o-mini",
+  "instruction": "Which accounts are managed by Schuster Matthias? Return only the account names, one per line, sorted alphabetically.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "search",
+      "params": {
+        "root": "contacts/",
+        "pattern": "Schuster Matthias",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 127
+    },
+    {
+      "step": 2,
+      "tool": "read",
+      "params": {
+        "path": "contacts/mgr_001.json",
+        "number": false
+      },
+      "result_preview": "cat contacts/mgr_001.json\n{\n  \"id\": \"mgr_001\",\n  \"account_id\": \"acct_001\",\n  \"full_name\": \"Matthias Schuster\",\n  \"role\": \"Account Manager\",\n  \"email\": \"matthias.schuster@example.com\",\n  \"preferred_tone\": \"direct\",\n  \"last_seen_on\": \"2026-10-02\",\n  \"tags\": [\n    \"account_manager\",\n    \"internal\"\n  ]\n}",
+      "elapsed_ms": 135
+    },
+    {
+      "step": 3,
+      "tool": "search",
+      "params": {
+        "root": "accounts/",
+        "pattern": "acct_001",
+        "limit": 20
+      },
+      "result_preview": "accounts/acct_001.json:2:  \"id\": \"acct_001\",\naccounts/README.MD:6:acct_001.json\naccounts/README.MD:13:  \"id\": \"acct_001\",",
+      "elapsed_ms": 120
+    }
+  ],
+  "score_detail": [
+    "expected outcome OUTCOME_OK, got OUTCOME_NONE_CLARIFICATION"
+  ],
+  "total_elapsed_ms": 6121,
+  "total_steps": 3,
+  "error": "LLM call failed: Error: Failed to connect to OpenAI API: TypeError: fetch failed",
+  "score": 0
+}

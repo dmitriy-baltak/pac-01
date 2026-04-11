@@ -1,0 +1,113 @@
+{
+  "task_id": "t04",
+  "prompt_version": "014",
+  "model": "gpt-4o-mini",
+  "instruction": "Email Priya a one-paragraph summary of the main initiative right now.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "read",
+      "params": {
+        "path": "90_memory/agent_initiatives.md",
+        "number": false
+      },
+      "result_preview": "cat 90_memory/agent_initiatives.md\n# Agent initiatives\n\nPurpose: keep long-running work visible without turning the repo into a task manager.\n\n## distill\n\n- **Owner surfaces:** [/00_inbox/](/00_inbox/), [/01_capture/](/01_capture/), [/02_distill/cards/](/02_distill/cards/), [/02_distill/threads/](/02_distill/threads/)\n- **Primary output:** new information becomes searchable through cards and threads\n- **Next tasks:**\n  - run [/99_process/document_capture.md](/99_process/document_capture.md) on 1",
+      "elapsed_ms": 123
+    },
+    {
+      "step": 2,
+      "tool": "search",
+      "params": {
+        "root": "contacts/",
+        "pattern": "Priya",
+        "limit": 5
+      },
+      "result_preview": "",
+      "elapsed_ms": 120,
+      "error": "5: [not_found] search root not found"
+    },
+    {
+      "step": 3,
+      "tool": "search",
+      "params": {
+        "root": "",
+        "pattern": "Priya",
+        "limit": 5
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 124
+    },
+    {
+      "step": 5,
+      "tool": "search",
+      "params": {
+        "root": "contacts/",
+        "pattern": "priya",
+        "limit": 5
+      },
+      "result_preview": "",
+      "elapsed_ms": 125,
+      "error": "5: [not_found] search root not found"
+    },
+    {
+      "step": 6,
+      "tool": "list",
+      "params": {
+        "path": "contacts/"
+      },
+      "result_preview": "",
+      "elapsed_ms": 131,
+      "error": "5: [not_found] folder not found"
+    },
+    {
+      "step": 7,
+      "tool": "list",
+      "params": {
+        "path": ""
+      },
+      "result_preview": "00_inbox/\n01_capture/\n02_distill/\n04_projects/\n07_rfcs/\n90_memory/\n99_process/\nAGENTS.md\nCLAUDE.md\nREADME.md",
+      "elapsed_ms": 120
+    },
+    {
+      "step": 8,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "Priya",
+        "limit": 5
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 127
+    },
+    {
+      "step": 9,
+      "tool": "search",
+      "params": {
+        "root": "README.md",
+        "pattern": "Priya",
+        "limit": 5
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 121
+    },
+    {
+      "step": 10,
+      "tool": "answer",
+      "params": {
+        "message": "none_clarification",
+        "outcome": "none_clarification",
+        "refs": [
+          "90_memory/agent_initiatives.md"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 129
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 12573,
+  "total_steps": 9,
+  "outcome": "none_clarification",
+  "answer_message": "none_clarification",
+  "score": 1
+}

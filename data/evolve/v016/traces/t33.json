@@ -1,0 +1,98 @@
+{
+  "task_id": "t33",
+  "prompt_version": "016",
+  "model": "gpt-4o-mini",
+  "instruction": "Capture this snippet from website substack.com into 01_capture/influential/2026-04-04__agent-evals-notes.md: \"The article argues that structured outputs help most when paired with narrow schemas and frequent evaluation, because failures usually come from ambiguous intent rather than model syntax alone.\"",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "write",
+      "params": {
+        "path": "01_capture/influential/2026-04-04__agent-evals-notes.md",
+        "content": "The article argues that structured outputs help most when paired with narrow schemas and frequent evaluation, because failures usually come from ambiguous intent rather than model syntax alone."
+      },
+      "result_preview": "OK",
+      "elapsed_ms": 203
+    },
+    {
+      "step": 2,
+      "tool": "search",
+      "params": {
+        "root": "02_distill/threads/",
+        "pattern": "agent-evals-notes",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 117
+    },
+    {
+      "step": 3,
+      "tool": "list",
+      "params": {
+        "path": "02_distill/threads/"
+      },
+      "result_preview": "2026-03-23__agent-platforms-and-runtime.md\n2026-03-23__ai-engineering-foundations.md\n_thread-template.md",
+      "elapsed_ms": 121
+    },
+    {
+      "step": 5,
+      "tool": "write",
+      "params": {
+        "path": "02_distill/threads/2026-04-04__agent-evals.md",
+        "content": "# Agent Evaluations\n\n- NEW: [2026-04-04__agent-evals-notes.md](../01_capture/influential/2026-04-04__agent-evals-notes.md)\n\n## Related Cards\n\n- [2026-04-04__agent-evals.md](../cards/2026-04-04__agent-evals.md)"
+      },
+      "result_preview": "OK",
+      "elapsed_ms": 138
+    },
+    {
+      "step": 6,
+      "tool": "list",
+      "params": {
+        "path": "02_distill/cards/"
+      },
+      "result_preview": "2026-02-10__how-i-use-claude-code.md\n2026-02-15__openai-harness-engineering.md\n2026-03-06__anthropic-biology-of-llms.md\n2026-03-17__intercom-claude-code-platform.md\n2026-03-23__hn-structured-outputs-practical-notes.md\n_card-template.md",
+      "elapsed_ms": 119
+    },
+    {
+      "step": 7,
+      "tool": "write",
+      "params": {
+        "path": "02_distill/cards/2026-04-04__agent-evals.md",
+        "content": "# Agent Evaluations\n\n- The article argues that structured outputs help most when paired with narrow schemas and frequent evaluation, because failures usually come from ambiguous intent rather than model syntax alone."
+      },
+      "result_preview": "OK",
+      "elapsed_ms": 134
+    },
+    {
+      "step": 8,
+      "tool": "write",
+      "params": {
+        "path": "02_distill/threads/2026-04-04__agent-evals.md",
+        "content": "# Agent Evaluations\n\n- NEW: [2026-04-04__agent-evals-notes.md](../01_capture/influential/2026-04-04__agent-evals-notes.md)\n\n## Related Cards\n\n- [2026-04-04__agent-evals.md](../cards/2026-04-04__agent-evals.md)"
+      },
+      "result_preview": "OK",
+      "elapsed_ms": 122
+    },
+    {
+      "step": 10,
+      "tool": "answer",
+      "params": {
+        "message": "Captured the snippet into a new markdown file and created a corresponding thread and card linking them together.",
+        "outcome": "ok",
+        "refs": [
+          "01_capture/influential/2026-04-04__agent-evals-notes.md",
+          "02_distill/threads/2026-04-04__agent-evals.md",
+          "02_distill/cards/2026-04-04__agent-evals.md"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 117
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 17699,
+  "total_steps": 8,
+  "outcome": "ok",
+  "answer_message": "Captured the snippet into a new markdown file and created a corresponding thread and card linking them together.",
+  "score": 1
+}

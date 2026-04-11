@@ -1,0 +1,274 @@
+{
+  "task_id": "t43",
+  "prompt_version": "017",
+  "model": "gpt-4o-mini",
+  "instruction": "What article did I capture 2 days ago?",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "search",
+      "params": {
+        "root": "01_capture/",
+        "pattern": "2026-03-27",
+        "limit": 5
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 123
+    },
+    {
+      "step": 2,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "2026-03-27",
+        "limit": 5
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 119
+    },
+    {
+      "step": 3,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "2026-03-28",
+        "limit": 5
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 124
+    },
+    {
+      "step": 4,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "2026-03-29",
+        "limit": 5
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 122
+    },
+    {
+      "step": 5,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "2026-03-26",
+        "limit": 5
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 125
+    },
+    {
+      "step": 6,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "2026-03-25",
+        "limit": 5
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 124
+    },
+    {
+      "step": 7,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "2026-03-24",
+        "limit": 5
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 139
+    },
+    {
+      "step": 8,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "2026-03-23",
+        "limit": 5
+      },
+      "result_preview": "00_inbox/2026-03-23__hn-agent-kernel-stateful-agents.md:3:Captured on: 2026-03-23\n00_inbox/2026-03-23__hn-reports-of-codes-death.md:3:Captured on: 2026-03-23\n00_inbox/2026-03-23__hn-reports-of-codes-death.md:4:HN context: front-page story on Hacker News on 2026-03-23\n00_inbox/2026-03-23__hn-vibe-coding-spam.md:3:Captured on: 2026-03-23\n00_inbox/2026-03-23__hn-walmart-chatgpt-checkout.md:3:Captured on: 2026-03-23",
+      "elapsed_ms": 124
+    },
+    {
+      "step": 9,
+      "tool": "search",
+      "params": {
+        "root": "01_capture/",
+        "pattern": "2026-03-23",
+        "limit": 5
+      },
+      "result_preview": "01_capture/influential/2026-03-23__hn-structured-outputs-practical-notes.md:5:- **Captured on:** 2026-03-23",
+      "elapsed_ms": 126
+    },
+    {
+      "step": 10,
+      "tool": "search",
+      "params": {
+        "root": "01_capture/",
+        "pattern": "2026-03-26",
+        "limit": 5
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 119
+    },
+    {
+      "step": 11,
+      "tool": "search",
+      "params": {
+        "root": "01_capture/",
+        "pattern": "2026-03-27",
+        "limit": 5
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 129
+    },
+    {
+      "step": 12,
+      "tool": "search",
+      "params": {
+        "root": "01_capture/",
+        "pattern": "2026-03-28",
+        "limit": 5
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 136
+    },
+    {
+      "step": 13,
+      "tool": "search",
+      "params": {
+        "root": "01_capture/",
+        "pattern": "2026-03-24",
+        "limit": 5
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 120
+    },
+    {
+      "step": 14,
+      "tool": "search",
+      "params": {
+        "root": "01_capture/",
+        "pattern": "2026-03-25",
+        "limit": 5
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 117
+    },
+    {
+      "step": 15,
+      "tool": "search",
+      "params": {
+        "root": "01_capture/",
+        "pattern": "2026-03-22",
+        "limit": 5
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 123
+    },
+    {
+      "step": 16,
+      "tool": "search",
+      "params": {
+        "root": "01_capture/",
+        "pattern": "2026-03-21",
+        "limit": 5
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 125
+    },
+    {
+      "step": 17,
+      "tool": "search",
+      "params": {
+        "root": "01_capture/",
+        "pattern": "2026-03-20",
+        "limit": 5
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 119
+    },
+    {
+      "step": 18,
+      "tool": "search",
+      "params": {
+        "root": "01_capture/",
+        "pattern": "2026-03-19",
+        "limit": 5
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 203
+    },
+    {
+      "step": 19,
+      "tool": "search",
+      "params": {
+        "root": "01_capture/",
+        "pattern": "2026-03-18",
+        "limit": 5
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 121
+    },
+    {
+      "step": 20,
+      "tool": "search",
+      "params": {
+        "root": "01_capture/",
+        "pattern": "2026-03-17",
+        "limit": 5
+      },
+      "result_preview": "01_capture/influential/2026-03-17__intercom-claude-code-platform.md:5:- **Captured for this template on:** 2026-03-17",
+      "elapsed_ms": 130
+    },
+    {
+      "step": 21,
+      "tool": "search",
+      "params": {
+        "root": "01_capture/",
+        "pattern": "2026-03-16",
+        "limit": 5
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 121
+    },
+    {
+      "step": 23,
+      "tool": "search",
+      "params": {
+        "root": "02_distill/cards/",
+        "pattern": "2026-03-27",
+        "limit": 5
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 126
+    },
+    {
+      "step": 25,
+      "tool": "answer",
+      "params": {
+        "message": "No article was captured 2 days ago. The latest captured article was on 2026-03-23 and there are no entries for 2026-03-27 in the relevant directories.",
+        "outcome": "none_clarification",
+        "refs": [
+          "01_capture/influential/2026-03-23__hn-structured-outputs-practical-notes.md",
+          "00_inbox/2026-03-23__hn-agent-kernel-stateful-agents.md",
+          "00_inbox/2026-03-23__hn-reports-of-codes-death.md",
+          "00_inbox/2026-03-23__hn-vibe-coding-spam.md",
+          "00_inbox/2026-03-23__hn-walmart-chatgpt-checkout.md",
+          "02_distill/cards/"
+        ]
+      },
+      "result_preview": "",
+      "elapsed_ms": 123
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 38921,
+  "total_steps": 23,
+  "outcome": "none_clarification",
+  "answer_message": "No article was captured 2 days ago. The latest captured article was on 2026-03-23 and there are no entries for 2026-03-27 in the relevant directories.",
+  "score": 1
+}

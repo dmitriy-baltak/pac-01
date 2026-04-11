@@ -1,0 +1,135 @@
+{
+  "task_id": "t43",
+  "prompt_version": "016",
+  "model": "gpt-4o-mini",
+  "instruction": "need the article i captured 41 days ago",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "find",
+      "params": {
+        "root": "00_inbox/",
+        "name": "2026-02-12",
+        "type": "all",
+        "limit": 1
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 121
+    },
+    {
+      "step": 2,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "2026-02-12",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 125
+    },
+    {
+      "step": 3,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "2026-02-",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 118
+    },
+    {
+      "step": 4,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "2026-01-",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 205
+    },
+    {
+      "step": 5,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "2026-03-12",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 203
+    },
+    {
+      "step": 6,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "2026-03-11",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 120
+    },
+    {
+      "step": 7,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "2026-03-10",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 125
+    },
+    {
+      "step": 8,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "2026-03-09",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 117
+    },
+    {
+      "step": 9,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "2026-03-08",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 120
+    },
+    {
+      "step": 10,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "2026-03-07",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 120
+    },
+    {
+      "step": 11,
+      "tool": "search",
+      "params": {
+        "root": "00_inbox/",
+        "pattern": "2026-03-06",
+        "limit": 20
+      },
+      "result_preview": "(no matches)",
+      "elapsed_ms": 218
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 15296,
+  "total_steps": 11,
+  "error": "LLM call failed: Error: Failed to connect to OpenAI API: TypeError: fetch failed",
+  "score": 1
+}

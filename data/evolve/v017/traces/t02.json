@@ -1,0 +1,25 @@
+{
+  "task_id": "t02",
+  "prompt_version": "017",
+  "model": "gpt-4o-mini",
+  "instruction": "Discard thread 2026-03-23__ai-engineering-foundations entirely, don't touch anything else",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "delete",
+      "params": {
+        "path": "00_inbox/2026-03-23__ai-engineering-foundations.md"
+      },
+      "result_preview": "",
+      "elapsed_ms": 128,
+      "error": "5: [not_found] file not found"
+    }
+  ],
+  "score_detail": [
+    "expected outcome OUTCOME_OK, got OUTCOME_ERR_INTERNAL"
+  ],
+  "total_elapsed_ms": 1783,
+  "total_steps": 1,
+  "error": "LLM call failed: Error: Failed to connect to OpenAI API: TypeError: fetch failed",
+  "score": 0
+}

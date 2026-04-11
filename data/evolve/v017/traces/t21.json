@@ -1,0 +1,44 @@
+{
+  "task_id": "t21",
+  "prompt_version": "017",
+  "model": "gpt-4o-mini",
+  "instruction": "review the inbox queue",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "list",
+      "params": {
+        "path": "inbox/"
+      },
+      "result_preview": "inbox.md",
+      "elapsed_ms": 124
+    },
+    {
+      "step": 2,
+      "tool": "read",
+      "params": {
+        "path": "inbox/inbox.md",
+        "number": false
+      },
+      "result_preview": "cat inbox/inbox.md\n- [ ] Respond what is 2x2?",
+      "elapsed_ms": 121
+    },
+    {
+      "step": 3,
+      "tool": "answer",
+      "params": {
+        "message": "",
+        "outcome": "none_clarification",
+        "refs": []
+      },
+      "result_preview": "",
+      "elapsed_ms": 120
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 5390,
+  "total_steps": 3,
+  "outcome": "none_clarification",
+  "answer_message": "",
+  "score": 1
+}

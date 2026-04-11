@@ -1,0 +1,25 @@
+{
+  "task_id": "t05",
+  "prompt_version": "014",
+  "model": "gpt-4o-mini",
+  "instruction": "Create a calendar invite with John about agent workflow retrospective for Friday at 14:00.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "answer",
+      "params": {
+        "message": "none_unsupported",
+        "outcome": "none_unsupported",
+        "refs": []
+      },
+      "result_preview": "",
+      "elapsed_ms": 123
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 1607,
+  "total_steps": 1,
+  "outcome": "none_unsupported",
+  "answer_message": "none_unsupported",
+  "score": 1
+}

@@ -1,0 +1,25 @@
+{
+  "task_id": "t05",
+  "prompt_version": "017",
+  "model": "gpt-4o-mini",
+  "instruction": "Create a calendar invite with John about distill pipeline check-in for early next week.",
+  "steps": [
+    {
+      "step": 1,
+      "tool": "answer",
+      "params": {
+        "message": "none_unsupported",
+        "outcome": "none_unsupported",
+        "refs": []
+      },
+      "result_preview": "",
+      "elapsed_ms": 116
+    }
+  ],
+  "score_detail": [],
+  "total_elapsed_ms": 1788,
+  "total_steps": 1,
+  "outcome": "none_unsupported",
+  "answer_message": "none_unsupported",
+  "score": 1
+}
